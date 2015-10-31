@@ -12,9 +12,9 @@ def ReadData(data):
 	actualScoreA = 0
 	actualScoreB = 0
 	if teamAScore > 16 or teamBScore > 16:	# overtimes are considered ties
-		score = 0.5
+		actualScoreA = 0.5
 	elif teamAScore == teamBScore:
-		score = 0.5
+		actualScoreB = 0.5
 	elif teamAScore > teamBScore:
 		actualScoreA = teamAScore / (teamAScore + teamBScore) + 0.05
 		actualScoreB = 1 - actualScoreA
