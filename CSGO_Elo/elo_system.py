@@ -5,8 +5,6 @@
 #
 # Rating of each team is updated after every match
 # newRating = oldRating - k(actualScore - expectedScore)
-# k is calculated based on round difference
-# k = param1*(1 + scoreDifference)^param2
 # param1 and param2 are the two parameters need to be determined by machine learning
 #
 # This file only calculates expectedScore, updates ratings with given parameters
@@ -16,7 +14,6 @@
 # Initialize 2 parameters for the function of k
 # This will be changed in the main running file
 param1 = None
-param2 = None
 
 # @brief calculate expected score of each team
 # @param package - [rating of team A, rating of team B]
@@ -31,14 +28,13 @@ def CalculateExpectedScore(package):
 	return expectedA, expectedB
 
 # @brief update rating of each team given the result of the match
-# @param package - [rating of team A, rating of team B, actual score of team A, round difference]
+# @param package - [rating of team A, rating of team B, actual score of team A]
 # @returen UpdatedTeamARating, UpdatedTeamBRating
 def UpdateRating(package):
 	ratingPackage = [package[0], package[1]]
 	expectedA, expectedB = CalculateExpectedScore(ratingPackage)
 
-	k = param1 * (1 + package[3])**param2
-	newRa = package[0] + k*(package[2] - expectedA)
-	newRb = package[1] + k*(1 - package[2] - expectedB)
+	newRa = package[0] + param1*(package[2] - expectedA)
+	newRb = package[1] + param1*(1 - package[2] - expectedB)
 
 	return newRa, newRb
