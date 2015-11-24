@@ -1,0 +1,24 @@
+# depslib dependency file v1.0
+1448404078 source:c:\users\user\desktop\computer\cs ranking\mainproject\classimplement.cpp
+	"classes.h"
+	<iostream>
+	<string>
+	<vector>
+	<sstream>
+	<fstream>
+	<algorithm>
+
+1448404078 c:\users\user\desktop\computer\cs ranking\mainproject\classes.h
+	<iostream>
+	<string>
+
+1448401871 source:c:\users\user\desktop\computer\cs ranking\mainproject\mainprogram.cpp
+	"classes.h"
+	<iostream>
+	<string>
+	<vector>
+	<sstream>
+	<fstream>
+	<algorithm>
+	<cmath>
+
