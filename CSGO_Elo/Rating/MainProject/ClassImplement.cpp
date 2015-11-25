@@ -91,7 +91,7 @@ ostream& operator<<(ostream& os, const Match& m)
 void CreateTeamVector(vector<Team>& teamData)
 {
 	string inFileName;
-	cout << "Teamlist file(with \".txt\"): ";
+	cout << "Print \"teamList.txt\": ";
 	cin >> inFileName;
 
 	ifstream infile(inFileName.c_str());
@@ -118,7 +118,7 @@ void CreateTeamVector(vector<Team>& teamData)
 void CreateMatchVector(vector<Match>& matchData)
 {
 	string inFileName;
-	cout << "Matchlist file(with \".txt\"): ";
+	cout << "Print \"matchIndex.txt\": ";
 	cin >> inFileName;
 
 	ifstream infile(inFileName.c_str());

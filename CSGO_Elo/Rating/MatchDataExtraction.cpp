@@ -124,7 +124,7 @@ int FindTeamIndex(const string& name, const vector<Team>& teamData)
 			first = mid + 1;
 	}
 
-	cout << "Do not have this team" << endl;
+	cout << "Do not have this team: " << name << endl;
 	return -1;
 }
 

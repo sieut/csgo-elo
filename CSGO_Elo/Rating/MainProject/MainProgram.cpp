@@ -23,15 +23,42 @@ int main()
 	vector<Match> matchData;
 	CreateMatchVector(matchData);
 
-	double k1 = 28.7;
-    double k2 = 0.0219;
+    double k1, k2;
+	double k1Start, k1Stop;
+    double k2Start, k2Stop;
+    int k1Step, k2Step;
+    string outputFileName;
+
+    cout << "k1-" << endl;
+    cout << "start: ";
+    cin >> k1Start;
+    cout << "stop: ";
+    cin >> k1Stop;
+    cout << "step: ";
+    cin >> k1Step;
+    cout << "k2-" << endl;
+    cout << "start: ";
+    cin >> k2Start;
+    cout << "stop: ";
+    cin >> k2Stop;
+    cout << "step: ";
+    cin >> k2Step;
+
+    cout << "Name of output file (no .txt): ";
+    cin >> outputFileName;
+    outputFileName += ".txt";
+
+    double k1EachStep = (k1Stop - k1Start) / k1Step;
+    double k2EachStep = (k2Stop - k2Start) / k2Step;
 
     double loseProb = 0.0;
+    double lowestLoseProb = 100.0;
+    double keepK1, keepK2;
 
-    ofstream outFile("TestResult.txt");
-    for (k1 = 20; k1 <= 40; k1 += 4/7.0)
+    ofstream outFile(outputFileName.c_str());
+    for (k1 = k1Start; k1 <= k1Stop; k1 += k1EachStep)
     {
-        for (k2 = 0.02; k2 <= 0.08; k2 += 3/1750.0)
+        for (k2 = k2Start; k2 <= k2Stop; k2 += k2EachStep)
         {
             loseProb = 0.0;
             for (int i = 0; i < matchData.size(); i++)
@@ -40,6 +67,14 @@ int main()
             }
 
             loseProb = loseProb / matchData.size();
+
+            if (loseProb < lowestLoseProb)
+            {
+                lowestLoseProb = loseProb;
+                keepK1 = k1;
+                keepK2 = k2;
+            }
+
             outFile << fixed << setprecision(7);
             outFile << k1 << " " << k2 << " " << loseProb << endl;
 
@@ -50,6 +85,9 @@ int main()
             }
         }
     }
+
+    cout << "Lowest L: " << lowestLoseProb << endl;
+    cout << "at k1: " << keepK1 << " at k2: " << keepK2 << endl;
 
 
 
