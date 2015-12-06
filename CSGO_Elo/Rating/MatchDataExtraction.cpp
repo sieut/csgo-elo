@@ -46,9 +46,10 @@ private:
 	int winIndex;
 	int loseIndex;
 	double winActualScore;		//exclude k2 part
+	string date;
 public:
 	Match();
-	Match(bool md, int winidx, int loseidx, double winActSc);
+	Match(bool md, int winidx, int loseidx, double winActSc, string matchDate);
 	bool isTie() const { return tie; }
 	friend ostream& operator<<(ostream& os, const Match& m);
 };
@@ -57,14 +58,16 @@ Match::Match()
 {
 	tie = false;
 	winIndex = loseIndex = winActualScore = -1;
+	date = "";
 }
 
-Match::Match(bool md, int winidx, int loseidx, double winActSc)
+Match::Match(bool md, int winidx, int loseidx, double winActSc, string matchDate)
 {
 	tie = md;
 	winIndex = winidx;
 	loseIndex = loseidx;
 	winActualScore = winActSc;
+	date = matchDate;
 }
 
 ostream& operator<<(ostream& os, const Match& m)
@@ -131,7 +134,7 @@ int FindTeamIndex(const string& name, const vector<Team>& teamData)
 void ExtractMatchVector(const string& input, vector<Match>& matchData, const vector<Team>& teamData)
 {
 	istringstream inSS;
-	string teamAName, teamBName;
+	string teamAName, teamBName, matchDate;
 	int teamAScore, teamBScore;
 
 	inSS.clear();
@@ -141,6 +144,7 @@ void ExtractMatchVector(const string& input, vector<Match>& matchData, const vec
 	inSS >> teamBName;
 	inSS >> teamAScore;
 	inSS >> teamBScore;
+	getline(inSS, matchDate);			// NEW: Get match's date
 	inSS.clear();
 
 	int teamAIndex = FindTeamIndex(teamAName, teamData);
@@ -153,15 +157,15 @@ void ExtractMatchVector(const string& input, vector<Match>& matchData, const vec
 		return;
 	}
 	else if (teamAScore > 16 || teamBScore > 16 || teamAScore == teamBScore) {		// In this case, the match went to overtime
-		matchData.push_back(Match(true, teamAIndex, teamBIndex, 0.5));
+		matchData.push_back(Match(true, teamAIndex, teamBIndex, 0.5, matchDate));
 		return;
 	} else if (teamAScore > teamBScore) {
 		winActualScore = static_cast<double>(teamAScore)/(teamAScore + teamBScore);
-		matchData.push_back(Match(false, teamAIndex, teamBIndex, winActualScore));
+		matchData.push_back(Match(false, teamAIndex, teamBIndex, winActualScore, matchDate));
 		return;
 	} else if (teamBScore > teamAScore) {
 		winActualScore = static_cast<double>(teamBScore)/(teamAScore + teamBScore);
-		matchData.push_back(Match(false, teamBIndex, teamAIndex, winActualScore));
+		matchData.push_back(Match(false, teamBIndex, teamAIndex, winActualScore, matchDate));
 		return;
 	}
 }

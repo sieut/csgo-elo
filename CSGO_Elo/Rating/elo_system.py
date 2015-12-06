@@ -1,3 +1,5 @@
+import math
+
 # Ra = rating of team a ; Rb = rating of team b
 # expectedA = expected score of team a vs team b ; expectedB = expected score of team b vs team a
 # expectedScore = 1 / ( 1 + 10^((otherTeamRating - thisTeamRating) / 400) )
@@ -22,7 +24,7 @@ def CalculateExpectedScore(package):
 	Ra = package[0]
 	Rb = package[1]
 
-	expectedA = 1 / ( 1 + 10**((Rb - Ra) / 400) )
+	expectedA = 1 / ( 1 + math.pow(10, float(Rb - Ra) / float(400)) )
 	expectedB = 1 - expectedA
 
 	return expectedA, expectedB
@@ -38,8 +40,8 @@ def UpdateRating(AInfo, BInfo, actualScoreA, actualScoreB):
 	if actualScoreA > 0.5: wtl = 1
 	elif actualScoreA == 0.5: wtl = 0.5
 
-	rateA = param1
-	rateB = param1
+	rateA = float(param1)
+	rateB = float(param1)
 	if AInfo[1] <= 40:
 		rateA *= 2
 	elif AInfo[1] <= 100:
@@ -59,3 +61,9 @@ def UpdateRating(AInfo, BInfo, actualScoreA, actualScoreB):
 	newRb = BInfo[0] + rateB * (1-wtl + actualScoreB - 2*expectedB)
 
 	return newRa, newRb
+
+def UpdateMatchesPlayed(TeamInfo):
+	if TeamInfo[1] > 150: TeamInfo[1] = 140
+	elif TeamInfo[1] > 100: TeamInfo[1] = 90
+	elif TeamInfo[1] > 40: TeamInfo[1] = 30
+	return TeamInfo

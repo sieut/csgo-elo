@@ -60,12 +60,13 @@ Match::Match()
 	winIndex = loseIndex = winActualScore = -1;
 }
 
-Match::Match(bool md, int winidx, int loseidx, double winActSc)
+Match::Match(bool md, int winidx, int loseidx, double winActSc, string matchDate)
 {
 	tie = md;
 	winIndex = winidx;
 	loseIndex = loseidx;
 	winActualScore = winActSc;
+	date = matchDate;
 }
 
 Match::Match(const string& input)
@@ -79,6 +80,7 @@ Match::Match(const string& input)
 	inSS >> winIndex;
 	inSS >> loseIndex;
 	inSS >> winActualScore;
+	getline(inSS, date);
 }
 
 ostream& operator<<(ostream& os, const Match& m)

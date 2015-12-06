@@ -30,9 +30,10 @@ private:
 	int winIndex;
 	int loseIndex;
 	double winActualScore;		//exclude k2 part
+	string date;
 public:
 	Match();
-	Match(bool md, int winidx, int loseidx, double winActSc);
+	Match(bool md, int winidx, int loseidx, double winActSc, string matchDate);
 	Match(const string& input);
 	int WinTeam() const { return winIndex; }
 	int LoseTeam() const { return loseIndex; }
