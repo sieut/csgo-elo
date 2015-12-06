@@ -12,6 +12,7 @@ using namespace std;
 
 void CreateTeamVector(vector<Team>& teamData);
 void CreateMatchVector(vector<Match>& matchData);
+void CreateRosterVector(vector<RosterInfo>& rosterData);
 void CalCulateExpectedScore(const Team& tA, const Team& tB, double& expectedA, double& expectedB);
 double UpdateRating(const Match& match, vector<Team>& teamData, double k1, double k2);
 //implementation in another file
@@ -22,6 +23,8 @@ int main()
 	CreateTeamVector(teamData);
 	vector<Match> matchData;
 	CreateMatchVector(matchData);
+    vector<RosterInfo> rosterData;
+    CreateRosterVector(rosterData);
 
     double k1, k2;
 	double k1Start, k1Stop;
@@ -61,8 +64,14 @@ int main()
         for (k2 = k2Start; k2 <= k2Stop; k2 += k2EachStep)
         {
             loseProb = 0.0;
+            int rosterInfoIdx = 0;      // NEW: Index over roster changes vector
+
             for (int i = 0; i < matchData.size(); i++)
             {
+                while (rosterData.at(rosterInfoIdx).Date() == matchData.at(i).Date()) {     // NEW: Adjust teams' numPlay due to roster change
+                    matchData.at(i).AdjustNumPlay();
+                    rosterInfoIdx += 1;
+                }
                 loseProb += UpdateRating(matchData.at(i), teamData, k1, k2);
             }
 

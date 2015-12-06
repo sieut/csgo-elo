@@ -18,6 +18,7 @@ public:
 	double K1weight() const;
 	void AddRating(double added);       //also add numPlay
 	void Reset();
+	void AdjustNumPlay();		// Change numPlay due to roster change
 	bool operator>(const Team& t) const { return name > t.name; }
 	bool operator<(const Team& t) const { return name < t.name; }
 	bool operator==(const Team& t) const { return name == t.name; }
@@ -39,7 +40,22 @@ public:
 	int LoseTeam() const { return loseIndex; }
 	double WinScore() const { return winActualScore; }
 	bool isTie() const { return tie; }
+	string Date() const { return date; }
 	friend ostream& operator<<(ostream& os, const Match& m);
+};
+
+// NEW CLASS: Holds roster changes information
+// teamIndex - index of team that has major roster change
+// date - date of change
+class RosterInfo {
+private:
+	int teamIndex;
+	string date;
+public:
+	RosterInfo();
+	RosterInfo(const string& input);
+	int Index() const { return teamIndex; }
+	string Date() const { return date; }
 };
 
 

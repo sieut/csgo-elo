@@ -47,6 +47,12 @@ void Team::Reset()
     rating = 1200;
 }
 
+void Team::AdjustNumPlay() {
+	if (numPlay >= 150) numPlay = 140;
+	else if (numPlay >= 100) numPlay = 90;
+	else if (numPlay >= 40) numPlay = 30;
+}
+
 ostream& operator<<(ostream& os, const Team& t)
 {
 	os << t.name << "  " << t.rating << " " << t.numPlay;
@@ -88,6 +94,19 @@ ostream& operator<<(ostream& os, const Match& m)
 	os << static_cast<int>(m.tie)  << " " << m.winIndex << " "
 	   << m.loseIndex << " " << m.winActualScore;
     return os;
+}
+
+
+RosterInfo::RosterInfo() {
+	teamIndex = 0;
+	date = "";
+}
+
+RosterInfo::RosterInfo(const string& input) {
+	istringstream inSS(input);
+
+	inSS >> teamIndex;
+	getline(inSS, date);
 }
 
 void CreateTeamVector(vector<Team>& teamData)
@@ -140,6 +159,30 @@ void CreateMatchVector(vector<Match>& matchData)
 	if (!infile.eof())
 	{
 		cerr << "Cannot read til the end (match)." << endl;
+		return;
+	}
+}
+
+void CreateRosterVector(vector<RosterInfo>& rosterData) {
+	string inFileName;
+	cout << "Print \"rosterChange.txt\": ";
+	cin >> inFileName;
+
+	ifstream infile(inFileName.c_str());
+	if (!infile.is_open()) {
+		cerr << "Cannot open roster file." << endl;
+		return;
+	}
+
+	string line;
+	getline(infile, line);
+	while (infile.good()) {
+		rosterData.push_back(RosterInfo(line));
+		getline(infile, line);
+	}
+
+	if (!infile.eof()) {
+		cerr << "Cannot read til the end." << endl;
 		return;
 	}
 }
