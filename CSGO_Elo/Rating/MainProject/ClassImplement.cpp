@@ -41,6 +41,7 @@ void Team::AddRating(double added)
     rating += K1weight() * added;
     numPlay++;
 }
+
 void Team::Reset()
 {
     numPlay = 0;
@@ -111,9 +112,9 @@ RosterInfo::RosterInfo(const string& input) {
 
 void CreateTeamVector(vector<Team>& teamData)
 {
-	string inFileName;
-	cout << "Print \"teamList.txt\": ";
-	cin >> inFileName;
+	string inFileName = "teamList.txt";
+	//cout << "Print \"teamList.txt\": ";
+	//cin >> inFileName;
 
 	ifstream infile(inFileName.c_str());
 	if (!infile.is_open())
@@ -138,9 +139,9 @@ void CreateTeamVector(vector<Team>& teamData)
 
 void CreateMatchVector(vector<Match>& matchData)
 {
-	string inFileName;
-	cout << "Print \"matchIndex.txt\": ";
-	cin >> inFileName;
+	string inFileName = "matchIndex.txt";
+	//cout << "Print \"matchIndex.txt\": ";
+	//cin >> inFileName;
 
 	ifstream infile(inFileName.c_str());
 	if (!infile.is_open())
@@ -164,9 +165,9 @@ void CreateMatchVector(vector<Match>& matchData)
 }
 
 void CreateRosterVector(vector<RosterInfo>& rosterData) {
-	string inFileName;
-	cout << "Print \"rosterChange.txt\": ";
-	cin >> inFileName;
+	string inFileName = "rosterChange.txt";
+	//cout << "Print \"rosterChange.txt\": ";
+	//cin >> inFileName;
 
 	ifstream infile(inFileName.c_str());
 	if (!infile.is_open()) {

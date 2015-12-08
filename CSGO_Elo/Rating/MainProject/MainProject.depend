@@ -47,3 +47,28 @@
 	<fstream>
 	<algorithm>
 
+1449386042 source:c:\users\user\desktop\computer\cs_ranking\git\sieu-repos\csgo_elo\rating\mainproject\classimplement.cpp
+	"classes.h"
+	<iostream>
+	<string>
+	<vector>
+	<sstream>
+	<fstream>
+	<algorithm>
+
+1449384171 c:\users\user\desktop\computer\cs_ranking\git\sieu-repos\csgo_elo\rating\mainproject\classes.h
+	<iostream>
+	<string>
+
+1449385372 source:c:\users\user\desktop\computer\cs_ranking\git\sieu-repos\csgo_elo\rating\mainproject\mainprogram.cpp
+	"classes.h"
+	<iostream>
+	<string>
+	<vector>
+	<sstream>
+	<fstream>
+	<algorithm>
+	<cmath>
+	<ios>
+	<iomanip>
+

@@ -69,7 +69,7 @@ int main()
             for (int i = 0; i < matchData.size(); i++)
             {
                 while (rosterData.at(rosterInfoIdx).Date() == matchData.at(i).Date()) {     // NEW: Adjust teams' numPlay due to roster change
-                    matchData.at(i).AdjustNumPlay();
+                    teamData.at(rosterData.at(rosterInfoIdx).Index()).AdjustNumPlay();
                     rosterInfoIdx += 1;
                 }
                 loseProb += UpdateRating(matchData.at(i), teamData, k1, k2);
