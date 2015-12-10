@@ -1,5 +1,6 @@
 #include "Hashtable.h"
 #include <iostream>
+#include <cstdlib>
 #include <string>
 #include <fstream>
 #include <cmath>
@@ -138,7 +139,11 @@ void InputData(HashTable& table, string& info)
     ifstream infile(inputFileName.c_str());
 
     if (!infile.is_open())
-        cerr << inputFileName << " cannot be opened" << endl;
+    {
+    	cerr << inputFileName << " cannot be opened" << endl;
+    	cerr << "Exit!" << endl;
+    	exit(EXIT_FAILURE);
+    }
 
     getline(infile, info);
     cout << "INFO: " << info << endl;
