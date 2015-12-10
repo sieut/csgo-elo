@@ -4,7 +4,7 @@ import sys
 from bs4 import BeautifulSoup
 
 sys.setrecursionlimit(1500)
-f = open('temp_data', 'r')
+f = open('match_links2', 'r')
 outF = open('data_raw2', 'w')
 
 for line in f:

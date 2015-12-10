@@ -1,5 +1,5 @@
-f = open('data_raw', 'r')
-fOut = open('data_sorted', 'w')
+f = open('data_raw2', 'r')
+fOut = open('data_sorted2', 'w')
 
 currentMonth = 'January'
 stringList = []
