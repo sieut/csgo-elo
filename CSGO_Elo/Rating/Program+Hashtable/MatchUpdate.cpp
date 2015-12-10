@@ -173,7 +173,7 @@ void ComputeResult(HashTable& table)
     double expectedA, expectedB;
     CalCulateExpectedScore(t1ptr, t2ptr, expectedA, expectedB);
 
-    int result = static_cast<int>(expectedA * 100);
+    int result = static_cast<int>(round(expectedA * 100));
     cout << "Result (" << team1 << ":" << team2 << ")--" << endl
          << result << ":" << 100 - result << endl << endl;
 
