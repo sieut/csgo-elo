@@ -82,6 +82,7 @@ void UpdateRatingHelper(HashTable& table, const Match& match)
     //Check if we have the teams in our record. Is this a new team?
     if (!CheckTeam(table, match.WinTeam(), false))
     {
+    	/*
         cout << "UpdateRating: we don't have the team " << match.WinTeam() << endl;
         cout << "Want to \"add\" it or \"exit\" the function: ";
         string command;
@@ -93,13 +94,14 @@ void UpdateRatingHelper(HashTable& table, const Match& match)
         }
         if (command == "exit")
             return;
-
+	*/
         table.Insert(match.WinTeam(), 1200.0);
         cout << "AddTeam " << match.WinTeam() << " successfully" << endl;
     }
 
     if (!CheckTeam(table, match.LoseTeam(), false))
     {
+    	/*
         cout << "UpdateRating: we don't have the team " << match.LoseTeam() << endl;
         cout << "Want to \"add\" it or \"exit\" the function: ";
         string command;
@@ -111,7 +113,7 @@ void UpdateRatingHelper(HashTable& table, const Match& match)
         }
         if (command == "exit")
             return;
-
+	*/
         table.Insert(match.LoseTeam(), 1200.0);
         cout << "AddTeam " << match.LoseTeam() << " successfully" << endl;
     }
