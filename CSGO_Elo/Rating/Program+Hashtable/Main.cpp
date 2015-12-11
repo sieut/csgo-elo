@@ -5,9 +5,6 @@
 #include <vector>
 #include <sstream>
 #include <fstream>
-#include <cmath>
-#include <ios>
-#include <iomanip>
 using namespace std;
 
 double K1 = 25.9907;
