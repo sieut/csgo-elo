@@ -10,7 +10,7 @@ using namespace std;
 extern double K1;
 extern double K2;
 
-void UpdateRatingHelper(HashTable& table, const Match& match);
+void UpdateRatingHelper(HashTable& table, const Match& match, bool add);
 void CalCulateExpectedScore(const Team* tA, const Team* tB, double& expectedA, double& expectedB);
 bool CheckTeam(const HashTable& table, const string& teamName, bool print);
 
@@ -57,6 +57,18 @@ void UpdateRating(HashTable& table, string& lastMatch)
     }
     int rosterInfoIdx = 0;
 
+    string addString;
+    bool autoAdd = false;
+    cout << "Add all unknown teams automatically? \"yes\" or \"no\": ";
+    cin >> addString;
+    while (addString != "yes" && addString != "no")
+    {
+        cout << "type again" << endl;
+        cin >> addString;
+    }
+    if (addString == "yes")
+        autoAdd = true;
+
     getline(infile, line);
     while (infile.good())
     {
@@ -67,7 +79,7 @@ void UpdateRating(HashTable& table, string& lastMatch)
             table.Search(rosterData.at(rosterInfoIdx).Team())->AdjustNumPlay();
             rosterInfoIdx++;
         }
-        UpdateRatingHelper(table, matchtemp);
+        UpdateRatingHelper(table, matchtemp, autoAdd);
         lastMatch = line;
         getline(infile, line);
     }
@@ -77,43 +89,45 @@ void UpdateRating(HashTable& table, string& lastMatch)
     cout << "Data are updated (don't forget to print)" << endl << endl;
 }
 
-void UpdateRatingHelper(HashTable& table, const Match& match)
+void UpdateRatingHelper(HashTable& table, const Match& match, bool add)
 {
     //Check if we have the teams in our record. Is this a new team?
     if (!CheckTeam(table, match.WinTeam(), false))
     {
-    	/*
-        cout << "UpdateRating: we don't have the team " << match.WinTeam() << endl;
-        cout << "Want to \"add\" it or \"exit\" the function: ";
-        string command;
-        cin >> command;
-        while (command != "add" && command != "exit")
+    	if (add == false)
         {
-            cout << "type again!";
+            cout << "UpdateRating: we don't have the team " << match.WinTeam() << endl;
+            cout << "Want to \"add\" it or \"exit\" the function: ";
+            string command;
             cin >> command;
+            while (command != "add" && command != "exit")
+            {
+                cout << "type again!";
+                cin >> command;
+            }
+            if (command == "exit")
+                return;
         }
-        if (command == "exit")
-            return;
-	*/
         table.Insert(match.WinTeam(), 1200.0);
         cout << "AddTeam " << match.WinTeam() << " successfully" << endl;
     }
 
     if (!CheckTeam(table, match.LoseTeam(), false))
     {
-    	/*
-        cout << "UpdateRating: we don't have the team " << match.LoseTeam() << endl;
-        cout << "Want to \"add\" it or \"exit\" the function: ";
-        string command;
-        cin >> command;
-        while (command != "add" && command != "exit")
+    	if (add == false)
         {
-            cout << "type again!";
+            cout << "UpdateRating: we don't have the team " << match.LoseTeam() << endl;
+            cout << "Want to \"add\" it or \"exit\" the function: ";
+            string command;
             cin >> command;
+            while (command != "add" && command != "exit")
+            {
+                cout << "type again!";
+                cin >> command;
+            }
+            if (command == "exit")
+                return;
         }
-        if (command == "exit")
-            return;
-	*/
         table.Insert(match.LoseTeam(), 1200.0);
         cout << "AddTeam " << match.LoseTeam() << " successfully" << endl;
     }
