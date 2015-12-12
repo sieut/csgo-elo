@@ -1,14 +1,20 @@
+//This file contains
+//   3. manage team
+
 #include "Team.h"
 #include "Hashtable.h"
 #include <iostream>
 #include <string>
 using namespace std;
 
+//4 functions the main UpdateTeam will call
 bool CheckTeam(const HashTable& table, const string& teamName, bool print);
-void AddTeam(HashTable& table, const string& teamName);
-void DeleteTeam(HashTable& table, const string& teamName);
-void ChangeName(HashTable& table, const string& nameFrom, const string& nameTo);
+void AddTeam(HashTable& table);
+void DeleteTeam(HashTable& table);
+void ChangeName(HashTable& table);
+void ChangeTeamData(HashTable& table);
 
+//UpdateTeam : main function for updating team (name)
 void UpdateTeam (HashTable& table)
 {
     cout << "What to do with TEAM (case-sensitive): " << endl
@@ -16,34 +22,25 @@ void UpdateTeam (HashTable& table)
          << "2) \"add\"  "
          << "3) \"delete\"  "
          << "4) \"changeName\"  "
-         << "5) \"back\"  " << endl;
+         << "5) \"changeTeamData\"  "
+         << "6) \"back\"  " << endl;
 
-    string command, teamName, teamName2;
+    string command;
     cin >> command;
     while (command != "back")
     {
-        if (command == "check"){
+        if (command == "check")
+        {
+            //only function that asks teamName here
+            string teamName;
             cout << "teamName: ";
             cin >> teamName;
             CheckTeam(table, teamName, true);
         }
-        else if (command == "add"){
-            cout << "teamName: ";
-            cin >> teamName;
-            AddTeam(table, teamName);
-        }
-        else if (command == "delete"){
-            cout << "teamName: ";
-            cin >> teamName;
-            DeleteTeam(table, teamName);
-        }
-        else if (command == "changeName"){
-            cout << "from: ";
-            cin >> teamName;
-            cout << "to: ";
-            cin >> teamName2;
-            ChangeName(table, teamName, teamName2);
-        }
+        else if (command == "add") AddTeam(table);
+        else if (command == "delete") DeleteTeam(table);
+        else if (command == "changeName") ChangeName(table);
+        else if (command == "changeTeamData") ChangeTeamData(table);
         else
             cout << "type again!" << endl;
 
@@ -52,22 +49,25 @@ void UpdateTeam (HashTable& table)
              << "2) \"add\"  "
              << "3) \"delete\"  "
              << "4) \"changeName\"  "
-             << "5) \"back\"  " << endl;
+             << "5) \"changeTeamData\"  "
+             << "6) \"back\"  " << endl;
         cin >> command;
     }
     cout << "back to main" << endl;
 }
 
+// returns true if have this team, false if don't have this team
+// if print = yes means print, no means not print
 bool CheckTeam(const HashTable& table, const string& teamName, bool print)
 {
-    Team* result = table.Search(teamName);
-    if (result == NULL)
+    Team* result = table.Search(teamName);  //uses Search method from HashTable class
+    if (result == NULL) // no this team
     {
         if (print)
             cout << "No this team name in the data" << endl << endl;
         return false;
     }
-    else
+    else    // print teamData
     {
         if (print)
             cout << *result << endl << endl;
@@ -75,22 +75,28 @@ bool CheckTeam(const HashTable& table, const string& teamName, bool print)
     }
 }
 
-void AddTeam(HashTable& table, const string& teamName)
+void AddTeam(HashTable& table)
 {
-    if (CheckTeam(table, teamName, false))
+    string teamName;
+    cout << "teamName: ";
+    cin >> teamName;
+    if (CheckTeam(table, teamName, false))  //have this team
     {
         cout << "AddTeam failed: already have " << teamName << endl << endl;
     }
     else
     {
-        table.Insert(teamName, 1200.0);
+        table.Insert(teamName, 1200.0); //insert new team with rating 1200, numPlay 0
         cout << "AddTeam " << teamName << " successfully" << endl << endl;
     }
 }
 
-void DeleteTeam(HashTable& table, const string& teamName)
+void DeleteTeam(HashTable& table)
 {
-    if (!CheckTeam(table, teamName, false))
+    string teamName;
+    cout << "teamName: ";
+    cin >> teamName;
+    if (!CheckTeam(table, teamName, false)) //don't have this team
     {
         cout << "DeleteTeam failed: " << teamName << "does not exist" << endl << endl;
     }
@@ -101,9 +107,14 @@ void DeleteTeam(HashTable& table, const string& teamName)
     }
 }
 
-void ChangeName(HashTable& table, const string& nameFrom, const string& nameTo)
+void ChangeName(HashTable& table)
 {
-    if (!CheckTeam(table, nameFrom, false))
+    string nameFrom, nameTo;
+    cout << "from: ";
+    cin >> nameFrom;
+    cout << "to: ";
+    cin >> nameTo;
+    if (!CheckTeam(table, nameFrom, false)) //don't have this team
     {
         cout << "ChangeName failed: " << nameFrom << "does not exist" << endl << endl;
     }
@@ -111,6 +122,28 @@ void ChangeName(HashTable& table, const string& nameFrom, const string& nameTo)
     {
         Team* teamptr = table.Search(nameFrom);
         table.Insert(nameTo, teamptr->Rating(), teamptr->NumPlay());
+        table.Delete(teamptr);
         cout << "ChangeName successfully" << endl << endl;
+    }
+}
+
+void ChangeTeamData(HashTable& table)
+{
+    string teamName;
+    cout << "teamName: ";
+    cin >> teamName;
+    Team* result = table.Search(teamName);  //uses Search method from HashTable class
+    double newRating;
+    int newNumPlay;
+    if (result == NULL) // no this team
+        cout << "No this team name in the data" << endl << endl;
+    else    // print teamData
+    {
+        cout << "Current data: " << *result << endl << endl;
+        cout << "New rating?: ";
+        cin >> newRating;
+        cout << "New numPlay?: ";
+        cin >> newNumPlay;
+        result->ChangeData(newRating, newNumPlay);
     }
 }

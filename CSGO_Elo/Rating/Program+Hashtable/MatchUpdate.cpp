@@ -1,3 +1,7 @@
+//This file contains 2 functions
+//   1. update rating
+//   2. compute result -- the end of this file
+
 #include "Team.h"
 #include "Hashtable.h"
 #include <iostream>
@@ -14,17 +18,20 @@ void UpdateRatingHelper(HashTable& table, const Match& match, bool add);
 void CalCulateExpectedScore(const Team* tA, const Team* tB, double& expectedA, double& expectedB);
 bool CheckTeam(const HashTable& table, const string& teamName, bool print);
 
+// UpdateRating : the main function for updating rating
+// -- will call UpdateRatingHelper, and UpdateRatingHelper will call CalCulateExpectedScored
 void UpdateRating(HashTable& table, string& lastMatch)
 {
     cout << lastMatch << endl;
-    //keep roster file
+
+    //KEEP all roster data from roster file to "rosterData"
     ifstream infile;
     string line;
-    vector<RosterInfo> rosterData;
+    vector<RosterInfo> rosterData; //keep roster data
     string rosterFileName;
     cout << "Roster file (no .txt) or print \"no\": ";
     cin >> rosterFileName;
-    if (rosterFileName != "no")
+    if (rosterFileName != "no") //rosterFileName = no means no roster file
     {
         rosterFileName += ".txt";
         infile.open(rosterFileName.c_str());
@@ -44,7 +51,7 @@ void UpdateRating(HashTable& table, string& lastMatch)
         infile.close();
     }
 
-    //run through matches
+    //Open match file
     string matchFileName;
     cout << "Match file (no .txt): ";
     cin >> matchFileName;
@@ -52,11 +59,12 @@ void UpdateRating(HashTable& table, string& lastMatch)
     infile.open(matchFileName.c_str());
     if (!infile.is_open())
     {
-        cerr << "Cannot open roster file." << endl;
+        cerr << "Cannot open match file." << endl;
         return;
     }
-    int rosterInfoIdx = 0;
 
+    //Feature: add unknown team automatically or manually?
+    //autoAdd = true -- automatically, false -- manually
     string addString;
     bool autoAdd = false;
     cout << "Add all unknown teams automatically? \"yes\" or \"no\": ";
@@ -69,32 +77,35 @@ void UpdateRating(HashTable& table, string& lastMatch)
     if (addString == "yes")
         autoAdd = true;
 
+    //RUN through matches
+    int rosterInfoIdx = 0;
     getline(infile, line);
     while (infile.good())
     {
         Match matchtemp(line);
         cout << "line: " << line << endl;
+        //if roster date == match date --> AdjustNumPlay
         while (rosterInfoIdx < rosterData.size() && rosterData.at(rosterInfoIdx).Date() == matchtemp.Date())
         {
             table.Search(rosterData.at(rosterInfoIdx).Team())->AdjustNumPlay();
             rosterInfoIdx++;
         }
-        UpdateRatingHelper(table, matchtemp, autoAdd);
-        lastMatch = line;
+        UpdateRatingHelper(table, matchtemp, autoAdd);  //UpdateRating!
+        lastMatch = line;   //keep the last line to put at the beginning of output file
         getline(infile, line);
     }
     infile.close();
-    lastMatch = "The last match: " + lastMatch;
+    lastMatch = "The last match: " + lastMatch; //put at the beginning of output file
 
     cout << "Data are updated (don't forget to print)" << endl << endl;
 }
 
-void UpdateRatingHelper(HashTable& table, const Match& match, bool add)
+void UpdateRatingHelper(HashTable& table, const Match& match, bool autoAdd)
 {
     //Check if we have the teams in our record. Is this a new team?
-    if (!CheckTeam(table, match.WinTeam(), false))
+    if (!CheckTeam(table, match.WinTeam(), false))  //Check if we have the winning team
     {
-    	if (add == false)
+    	if (autoAdd == false)   //if not autoAdd - asks user
         {
             cout << "UpdateRating: we don't have the team " << match.WinTeam() << endl;
             cout << "Want to \"add\" it or \"exit\" the function: ";
@@ -112,9 +123,9 @@ void UpdateRatingHelper(HashTable& table, const Match& match, bool add)
         cout << "AddTeam " << match.WinTeam() << " successfully" << endl;
     }
 
-    if (!CheckTeam(table, match.LoseTeam(), false))
+    if (!CheckTeam(table, match.LoseTeam(), false)) //Check if we have the winning team
     {
-    	if (add == false)
+    	if (autoAdd == false)   //if not autoAdd - asks user
         {
             cout << "UpdateRating: we don't have the team " << match.LoseTeam() << endl;
             cout << "Want to \"add\" it or \"exit\" the function: ";
@@ -133,12 +144,13 @@ void UpdateRatingHelper(HashTable& table, const Match& match, bool add)
     }
 
     //teamA - win, teamB - lose
-    Team* tAptr = table.Search(match.WinTeam());
+    Team* tAptr = table.Search(match.WinTeam()); //use method Search of HashTable class
     Team* tBptr = table.Search(match.LoseTeam());
 
     double expectedA, expectedB;
-    CalCulateExpectedScore(tAptr, tBptr, expectedA, expectedB);
+    CalCulateExpectedScore(tAptr, tBptr, expectedA, expectedB); //calculate expected score
 
+    //add rating
     if (match.IsTie())
     {
         //k1 weight is built in AddRating
@@ -152,12 +164,18 @@ void UpdateRatingHelper(HashTable& table, const Match& match, bool add)
     }
 }
 
+//output : expectedA, expectedB
 void CalCulateExpectedScore(const Team* tA, const Team* tB, double& expectedA, double& expectedB)
 {
 	expectedA = 1 / ( 1 + pow(10, (tB->Rating() - tA->Rating()) / 400) );
 	expectedB = 1 - expectedA;
 }
 
+//ComputeResult : main function for computing result
+// -- will ask for two team names and print the odd
+// output format:
+// Result (team1:team2)--
+// team1odd:team2odd
 void ComputeResult(HashTable& table)
 {
     string team1, team2;
@@ -181,11 +199,11 @@ void ComputeResult(HashTable& table)
         return;
     }
 
-    Team* t1ptr = table.Search(team1);
+    Team* t1ptr = table.Search(team1);  //use Search method from HashTable class
     Team* t2ptr = table.Search(team2);
 
     double expectedA, expectedB;
-    CalCulateExpectedScore(t1ptr, t2ptr, expectedA, expectedB);
+    CalCulateExpectedScore(t1ptr, t2ptr, expectedA, expectedB); //find expected score of each team
 
     int result = static_cast<int>(round(expectedA * 100));
     cout << "Result (" << team1 << ":" << team2 << ")--" << endl

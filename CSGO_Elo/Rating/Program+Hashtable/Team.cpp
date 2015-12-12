@@ -1,3 +1,5 @@
+//This file contains all methods in Team, Match and RosterInfo class
+
 #include "Team.h"
 #include <iostream>
 #include <string>
@@ -59,7 +61,14 @@ void Team::Reset()
     rating = 1200;
 }
 
-void Team::AdjustNumPlay() {
+void Team::ChangeData(double newRating, int newNumPlay)
+{
+    rating = newRating;
+    numPlay = newNumPlay;
+}
+
+void Team::AdjustNumPlay()
+{
 	if (numPlay >= 150)
         numPlay = 140;
 	else if (numPlay >= 100)
@@ -75,7 +84,6 @@ ostream& operator<<(ostream& os, const Team& t)
 }
 
 // Match class
-
 Match::Match()
 {
 	mode = 'w';
@@ -151,7 +159,6 @@ ostream& operator<<(ostream& os, const Match& m)
 }
 
 // RosterInfo class
-
 RosterInfo::RosterInfo()
 {
 	teamName = "-*null*-";
@@ -166,81 +173,3 @@ RosterInfo::RosterInfo(const string& input)
 	getline(inSS, date);
 }
 
-//OTHER FUNCTION
-void CreateTeamVector(vector<Team>& teamData)
-{
-	string inFileName = "teamList.txt";
-	//cout << "Print \"teamList.txt\": ";
-	//cin >> inFileName;
-
-	ifstream infile(inFileName.c_str());
-	if (!infile.is_open())
-	{
-		cerr << "Cannot open team file." << endl;
-		return;
-	}
-	string line;
-	getline(infile, line);
-	while (infile.good())
-	{
-		teamData.push_back(Team(line));
-		getline(infile, line);
-	}
-
-	if (!infile.eof())
-	{
-		cerr << "Cannot read til the end (team)." << endl;
-		return;
-	}
-}
-
-void CreateMatchVector(vector<Match>& matchData)
-{
-	string inFileName = "matchIndex.txt";
-	//cout << "Print \"matchIndex.txt\": ";
-	//cin >> inFileName;
-
-	ifstream infile(inFileName.c_str());
-	if (!infile.is_open())
-	{
-		cerr << "Cannot open match file." << endl;
-		return;
-	}
-	string line;
-	getline(infile, line);
-	while (infile.good())
-	{
-		matchData.push_back(Match(line));
-		getline(infile, line);
-	}
-
-	if (!infile.eof())
-	{
-		cerr << "Cannot read til the end (match)." << endl;
-		return;
-	}
-}
-
-void CreateRosterVector(vector<RosterInfo>& rosterData) {
-	string inFileName = "rosterChange.txt";
-	//cout << "Print \"rosterChange.txt\": ";
-	//cin >> inFileName;
-
-	ifstream infile(inFileName.c_str());
-	if (!infile.is_open()) {
-		cerr << "Cannot open roster file." << endl;
-		return;
-	}
-
-	string line;
-	getline(infile, line);
-	while (infile.good()) {
-		rosterData.push_back(RosterInfo(line));
-		getline(infile, line);
-	}
-
-	if (!infile.eof()) {
-		cerr << "Cannot read til the end." << endl;
-		return;
-	}
-}

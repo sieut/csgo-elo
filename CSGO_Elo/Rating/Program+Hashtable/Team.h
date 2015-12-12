@@ -1,6 +1,7 @@
 #ifndef TEAM_H_INCLUDED
 #define TEAM_H_INCLUDED
 
+// 3 classes: Team, Match, RosterInfo
 #include <iostream>
 #include <string>
 using namespace std;
@@ -19,12 +20,12 @@ public:
 	int NumPlay() const { return numPlay; }
 	double K1weight() const;
 	void AddRating(double added);       //also add numPlay
-	void Reset();
+	void Reset();                       //Reset to 1200, 0
+	void ChangeData(double newRating, int newNumPlay);
 	void AdjustNumPlay();		// Change numPlay due to roster change
-	bool operator>(const Team& t) const { return name > t.name; }
-	bool operator<(const Team& t) const { return name < t.name; }
-	bool operator==(const Team& t) const { return name == t.name; }
 	friend ostream& operator<<(ostream& os, const Team& t);
+
+	//public pointer members to make object a doubly linked list element
 	Team* prev;
 	Team* next;
 };
@@ -39,7 +40,7 @@ private:
 public:
 	Match();
 	Match(char md, string win, string lose, double winActSc, string matchDate);
-	Match(const string& input);
+	Match(const string& input);     //input expected to be a line from input file
 	string WinTeam() const { return winName; }
 	string LoseTeam() const { return loseName; }
 	double WinScore() const { return winActualScore; }
@@ -50,7 +51,7 @@ public:
 };
 
 // NEW CLASS: Holds roster changes information
-// teamIndex - index of team that has major roster change
+// teamName - name of team that has major roster change //updated: we use name instead of index
 // date - date of change
 class RosterInfo {
 private:
@@ -58,7 +59,7 @@ private:
 	string date;
 public:
 	RosterInfo();
-	RosterInfo(const string& input);
+	RosterInfo(const string& input);    //input expected to be a line from input file
 	string Team() const { return teamName; }
 	string Date() const { return date; }
 };

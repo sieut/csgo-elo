@@ -6,7 +6,7 @@
 #include <string>
 using namespace std;
 
-static const int T_SIZE = 1543;
+static const int T_SIZE = 1543; //can be changed if data is bigger
 
 class TeamLinkedList {
 private:

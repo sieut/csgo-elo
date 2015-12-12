@@ -1,3 +1,9 @@
+//This file contains
+//  1. Definition of all methods in TeamLinkedList and HashTable class
+//  2. InputData function  -- used from main
+//  3. PrintTable function  -- used from main
+
+
 #include "Hashtable.h"
 #include <iostream>
 #include <cstdlib>
@@ -23,6 +29,9 @@ TeamLinkedList::~TeamLinkedList()
     }
 }
 
+//Search:
+//   @input: teamName
+//   @return Team pointer
 Team* TeamLinkedList::Search(const string& teamName) const
 {
     Team* teamptr = head;
@@ -33,6 +42,8 @@ Team* TeamLinkedList::Search(const string& teamName) const
     return teamptr;
 }
 
+//Insert:
+//
 void TeamLinkedList::Insert(Team* tptr)
 {
     tptr->next = head;
@@ -128,7 +139,6 @@ ostream& operator<<(ostream& os, const HashTable& ht)
 }
 
 // Other functions
-
 void InputData(HashTable& table, string& info)
 {
     string inputFileName;
