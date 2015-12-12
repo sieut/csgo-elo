@@ -43,7 +43,7 @@ Team* TeamLinkedList::Search(const string& teamName) const
 }
 
 //Insert:
-//
+//   @input: Team pointer
 void TeamLinkedList::Insert(Team* tptr)
 {
     tptr->next = head;
@@ -53,6 +53,8 @@ void TeamLinkedList::Insert(Team* tptr)
     tptr->prev = NULL;
 }
 
+//Delete
+//   @input: Team pointer
 void TeamLinkedList::Delete(Team* tptr)
 {
     if (tptr->prev != NULL)
@@ -84,6 +86,9 @@ HashTable::HashTable()
 {
 }
 
+//HF: Hash table function: I just random the number of it make the team Name distributed
+//   @input: teamName
+//   @return: hash table index
 int HashTable::HF(const string& teamName) const
 {
     double value = 0;
@@ -102,7 +107,8 @@ Team* HashTable::Search(const string& teamName) const
     table[HF(teamName)].Search(teamName);
 }
 
-void HashTable::Insert(Team* tptr)
+// Insert
+void HashTable::Insert(Team* tptr)  //main one
 {
     table[HF(tptr->Name())].Insert(tptr);
 }
@@ -119,7 +125,8 @@ void HashTable::Insert(const string& teamName, double rt, int play)
     Insert(teamptr);
 }
 
-void HashTable::Delete(Team* tptr)
+// Delete
+void HashTable::Delete(Team* tptr)  //main one
 {
     table[HF(tptr->Name())].Delete(tptr);
 }
@@ -141,6 +148,7 @@ ostream& operator<<(ostream& os, const HashTable& ht)
 // Other functions
 void InputData(HashTable& table, string& info)
 {
+    //Open file
     string inputFileName;
     cout << "Input data file (no .txt): ";
     cin >> inputFileName;
@@ -155,14 +163,16 @@ void InputData(HashTable& table, string& info)
     	exit(EXIT_FAILURE);
     }
 
+    //Keep the first line as info (or last match in the main function)
     getline(infile, info);
     cout << "INFO: " << info << endl;
 
+    //Run through file
     string temp;
     getline(infile, temp);
     while (infile.good())
     {
-        table.Insert(temp);
+        table.Insert(temp); //insert using insert method
         getline(infile, temp);
     }
     infile.close();
@@ -175,13 +185,14 @@ void PrintTable(const HashTable& table, const string& lastMatch)
     string outputFileName;
     string date;
 
+    //Ask for output file name
     cout << "Name of output file (no .txt): ";
     cin >> outputFileName;
     outputFileName += ".txt";
 
     ofstream outfile(outputFileName.c_str());
-    outfile << lastMatch << endl;
-    outfile << table;       //no endline needed
+    outfile << lastMatch << endl;   // print the last match on the first line
+    outfile << table;       //no endline needed // print the hash table!
     outfile.close();
 
     cout << "Print data successfully" << endl << endl;
