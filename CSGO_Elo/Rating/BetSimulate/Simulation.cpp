@@ -10,7 +10,7 @@ using namespace std;
 double K1 = 25.9907;
 double K2 = 0.06746;
 
-void UpdateRatingHelper(HashTable& table, const Match& match, bool add);
+void UpdateRatingHelper(HashTable& table, const Match& match, bool autoAdd);
 void CalCulateExpectedScore(const Team* tA, const Team* tB, double& expectedA, double& expectedB);
 double KellyBetSize(double expected, double odd, int format);
 
@@ -42,6 +42,7 @@ Bet::Bet(const string& input) {
 
 	inSS >> format;
 	getline(inSS, date);
+	date += " ";		// A bug in data file, trailing space
 }
 
 double Bet::PerformBet(const HashTable& table, ostream& fileStream) {
