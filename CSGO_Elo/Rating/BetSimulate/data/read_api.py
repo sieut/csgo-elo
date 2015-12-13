@@ -15,7 +15,8 @@ for match in matchesStat: odds[match['match']] = [int(match['a']), int(match['b'
 team_abb = {'Na\'Vi':'NatusVincere', 'LG':'Luminosity', 'C9':'Cloud9', 
 	'VP':'Virtus.pro', 'E-Frag':'E-frag.net', 'FSid3': 'FlipSid3', 
 	'NME':'Enemy', 'mouz': 'mousesports', 'Fnatic': 'fnatic', 
-	'HR': 'HellRaisers', 'Dignitas':'dignitas', 'coL':'compLexity', 'WinterFox': 'Winterfox'}
+	'HR': 'HellRaisers', 'Dignitas':'dignitas', 'coL':'compLexity', 
+	'WinterFox': 'Winterfox', 'TSM':'?'}
 
 with open('lounge_odds','w') as outF:
 	for match in matches:
