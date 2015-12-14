@@ -37,12 +37,12 @@ Bet::Bet(const string& input) {
 	inSS >> teamB;
 	inSS >> winner;
 
-	inSS >> a; inSS >> b;
+	inSS >> a;
+	inSS >> b;
 	oddA = static_cast<double>(a)/(a+b);
 
 	inSS >> format;
 	getline(inSS, date);
-	date += " ";		// A bug in data file, trailing space
 }
 
 double Bet::PerformBet(const HashTable& table, ostream& fileStream) {
@@ -52,27 +52,29 @@ double Bet::PerformBet(const HashTable& table, ostream& fileStream) {
     double expectedA, expectedB;
     CalCulateExpectedScore(tAptr, tBptr, expectedA, expectedB); //calculate expected score
 
-    fileStream << date << "," << teamA << " - " << teamB;
+    fileStream << date << "," << teamA << " - " << teamB << ",";
 
     double result = 0.0;
-    if (KellyBetSize(expectedA, oddA, format) > 0.01) {
-    	fileStream << "," << teamA;
-    	switch (winner) {
-    		case 'a':
-    			result = KellyBetSize(expectedA, oddA, format) * ( (1-oddA)/oddA ) * 10;
-    		case 'b':
-    			result = -KellyBetSize(expectedA, oddA, format) * 10;
-    	}
-    }
-    else if (KellyBetSize(expectedB, 1-oddA, format) > 0.01) {
-    	fileStream << "," << teamB;
-    	switch (winner) {
-    		case 'a':
-    			result = -KellyBetSize(expectedB, 1-oddA, format) * 10;
-    		case 'b':
-    			result = KellyBetSize(expectedB, 1-oddA, format) * ( oddA/(1-oddA) ) * 10;
-    	}
-    }
+    if (tAptr->NumPlay() >= 100 && tBptr->NumPlay() >= 100) {
+	    if (KellyBetSize(expectedA, oddA, format) > 0.01) {
+	    	fileStream << "," << teamA;
+	    	switch (winner) {
+	    		case 'a':
+	    			result = KellyBetSize(expectedA, oddA, format) * ( (1-oddA)/oddA ) * 10;
+	    		case 'b':
+	    			result = -KellyBetSize(expectedA, oddA, format) * 10;
+	    	}
+	    }
+	    else if (KellyBetSize(expectedB, 1-oddA, format) > 0.01) {
+	    	fileStream << "," << teamB;
+	    	switch (winner) {
+	    		case 'a':
+	    			result = -KellyBetSize(expectedB, 1-oddA, format) * 10;
+	    		case 'b':
+	    			result = KellyBetSize(expectedB, 1-oddA, format) * ( oddA/(1-oddA) ) * 10;
+	    	}
+	    }
+	}
 
     fileStream << "," << result << endl;
     return result;
@@ -83,7 +85,7 @@ double KellyBetSize(double expected, double odd, int format) {
 		case 1:
 			expected = expected;
 		case 2:			// Not sure about the formula for BO2s
-			expected = expected;
+			expected = expected * expected;
 		case 3:
 			expected = expected * expected + 2 * expected * expected * (1 - expected);
 		case 5:
@@ -189,7 +191,7 @@ int main() {
             table.Search(rosterData.at(rosterInfoIdx).Team())->AdjustNumPlay();
             rosterInfoIdx++;
         }
-
+        // Perform bet
         while (betIdx < betData.size() && betData.at(betIdx).Date() == matchtemp.Date()) {
         	profit += betData.at(betIdx).PerformBet(table, outFile);
         	betIdx++;
