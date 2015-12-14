@@ -49,34 +49,38 @@ double Bet::PerformBet(const HashTable& table, ostream& fileStream) {
 	Team* tAptr = table.Search(teamA); //use method Search of HashTable class
     Team* tBptr = table.Search(teamB);
 
-    double expectedA, expectedB;
-    CalCulateExpectedScore(tAptr, tBptr, expectedA, expectedB); //calculate expected score
+   	double result = 0.0;
 
-    fileStream << date << "," << teamA << " - " << teamB << ",";
+    if (tAptr != NULL && tBptr != NULL) {
+	    double expectedA, expectedB;
+	    CalCulateExpectedScore(tAptr, tBptr, expectedA, expectedB); //calculate expected score
 
-    double result = 0.0;
-    if (tAptr->NumPlay() >= 100 && tBptr->NumPlay() >= 100) {
-	    if (KellyBetSize(expectedA, oddA, format) > 0.01) {
-	    	fileStream << "," << teamA;
-	    	switch (winner) {
-	    		case 'a':
-	    			result = KellyBetSize(expectedA, oddA, format) * ( (1-oddA)/oddA ) * 10;
-	    		case 'b':
-	    			result = -KellyBetSize(expectedA, oddA, format) * 10;
-	    	}
-	    }
-	    else if (KellyBetSize(expectedB, 1-oddA, format) > 0.01) {
-	    	fileStream << "," << teamB;
-	    	switch (winner) {
-	    		case 'a':
-	    			result = -KellyBetSize(expectedB, 1-oddA, format) * 10;
-	    		case 'b':
-	    			result = KellyBetSize(expectedB, 1-oddA, format) * ( oddA/(1-oddA) ) * 10;
-	    	}
-	    }
+	    fileStream << date << "," << teamA << " - " << teamB << ",BO" << format << "," 
+	    	<< expectedA << " - " << expectedB << "," << oddA << " - " << 1-oddA << ",";
+
+	    if (tAptr->NumPlay() >= 100 && tBptr->NumPlay() >= 100) {
+		    if (KellyBetSize(expectedA, oddA, format) > 0.01) {
+		    	fileStream << teamA;
+		    	switch (winner) {
+		    		case 'a':
+		    			result = KellyBetSize(expectedA, oddA, format) * ( (1-oddA)/oddA ) * 10;
+		    		case 'b':
+		    			result = -KellyBetSize(expectedA, oddA, format) * 10;
+		    	}
+		    }
+		    else if (KellyBetSize(expectedB, 1-oddA, format) > 0.01) {
+		    	fileStream << teamB;
+		    	switch (winner) {
+		    		case 'a':
+		    			result = -KellyBetSize(expectedB, 1-oddA, format) * 10;
+		    		case 'b':
+		    			result = KellyBetSize(expectedB, 1-oddA, format) * ( oddA/(1-oddA) ) * 10;
+		    	}
+		    }
+		}
+
+		fileStream << "," << result << endl;
 	}
-
-    fileStream << "," << result << endl;
     return result;
 }
 
@@ -85,14 +89,14 @@ double KellyBetSize(double expected, double odd, int format) {
 		case 1:
 			expected = expected;
 		case 2:			// Not sure about the formula for BO2s
-			expected = expected * expected;
+			return 0;
 		case 3:
-			expected = expected * expected + 2 * expected * expected * (1 - expected);
+			expected = expected * expected + 2.0 * expected * expected * (1.0 - expected);
 		case 5:
-			expected = expected * expected * expected + 3 * expected * expected * expected * (1 - expected)
-						+ 6 * expected * expected * expected * (1 - expected) * (1 - expected);
+			expected = expected * expected * expected + 3.0 * expected * expected * expected * (1.0 - expected)
+						+ 6.0 * expected * expected * expected * (1.0 - expected) * (1.0 - expected);
 	}
-	return ( expected * ( (1-odd)/odd + 1 ) - 1 ) / ( 3 * (1-odd)/odd );
+	return ( expected * ( (1.0-odd)/odd + 1.0 ) - 1.0 ) / ( 3.0 * (1.0-odd)/odd );
 }
 
 int main() {
