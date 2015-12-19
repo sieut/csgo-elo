@@ -10,9 +10,10 @@ using namespace std;
 double K1 = 25.9907;
 double K2 = 0.06746;
 
+double KellyBetSize(double expected, double odd, int format);
 void UpdateRatingHelper(HashTable& table, const Match& match, bool autoAdd);
 void CalCulateExpectedScore(const Team* tA, const Team* tB, double& expectedA, double& expectedB);
-double KellyBetSize(double expected, double odd, int format);
+
 
 class Bet {
 public:
@@ -84,6 +85,11 @@ double Bet::PerformBet(const HashTable& table, ostream& fileStream) {
     return result;
 }
 
+//Additional functions (put here because one of them has to be after class Bet)
+void InputRosterData(vector<RosterInfo>& rosterData); 
+void InputBetData(vector<Bet>& betData);
+bool SetAutoAdd();
+
 double KellyBetSize(double expected, double odd, int format) {
 	switch (format) {
 		case 1:
@@ -103,56 +109,15 @@ int main() {
 	HashTable table;
 
 	//KEEP all roster data from roster file to "rosterData"
-    ifstream infile;
-    string line;
-    vector<RosterInfo> rosterData; //keep roster data
-    string rosterFileName;
-    cout << "Roster file (no .txt) or print \"no\": ";
-    cin >> rosterFileName;
-    if (rosterFileName != "no") //rosterFileName = no means no roster file
-    {
-        rosterFileName += ".txt";
-        infile.open(rosterFileName.c_str());
-
-        if (!infile.is_open())
-        {
-            cerr << "Cannot open roster file." << endl;
-            return 0;
-        }
-
-        getline(infile, line);
-        while (infile.good())
-        {
-            rosterData.push_back(RosterInfo(line));
-            getline(infile, line);
-        }
-        infile.close();
-    }
+    vector<RosterInfo> rosterData;
+    InputRosterData(rosterData);
 
     // Open bet file, get bet data
     vector<Bet> betData; //keep bet data
-    string betFileName;
-    cout << "Bet file (no .txt): ";
-    cin >> betFileName;
-    betFileName += ".txt";
-    infile.open(betFileName.c_str());
-
-    if (!infile.is_open())
-    {
-        cerr << "Cannot open bet file." << endl;
-        return 0;
-    }
-
-    getline(infile, line);
-    while (infile.good())
-    {
-        betData.push_back(Bet(line));
-        getline(infile, line);
-    }
-    infile.close();
-
+    InputBetData(betData);
 
     //Open match file
+    ifstream infile;
     string matchFileName;
     cout << "Match file (no .txt): ";
     cin >> matchFileName;
@@ -166,24 +131,15 @@ int main() {
 
     //Feature: add unknown team automatically or manually?
     //autoAdd = true -- automatically, false -- manually
-    string addString;
-    bool autoAdd = false;
-    cout << "Add all unknown teams automatically? \"yes\" or \"no\": ";
-    cin >> addString;
-    while (addString != "yes" && addString != "no")
-    {
-        cout << "type again" << endl;
-        cin >> addString;
-    }
-    if (addString == "yes")
-        autoAdd = true;
+    bool autoAdd = SetAutoAdd();
 
-    ofstream outFile("track_bet");
+    ofstream outFile("track_bet.txt");
 
     //RUN through matches
     int rosterInfoIdx = 0;
     int betIdx = 0;
     double profit = 0.0;
+    string line;
     getline(infile, line);
     while (infile.good())
     {
@@ -208,4 +164,29 @@ int main() {
     outFile.close();
 
 	return 0;
+}
+
+void InputBetData(vector<Bet>& betData)
+{
+    ifstream infile;
+    string betFileName;
+    cout << "Bet file (no .txt): ";
+    cin >> betFileName;
+    betFileName += ".txt";
+    infile.open(betFileName.c_str());
+
+    if (!infile.is_open())
+    {
+        cerr << "Cannot open bet file." << endl;
+        return;
+    }
+
+    string line;
+    getline(infile, line);
+    while (infile.good())
+    {
+        betData.push_back(Bet(line));
+        getline(infile, line);
+    }
+    infile.close();
 }

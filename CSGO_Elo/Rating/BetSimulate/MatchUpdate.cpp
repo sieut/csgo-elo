@@ -14,9 +14,13 @@ using namespace std;
 extern double K1;
 extern double K2;
 
-void UpdateRatingHelper(HashTable& table, const Match& match, bool autoAdd);
+void UpdateRatingHelper(HashTable& table, const Match& match, bool add);
 void CalCulateExpectedScore(const Team* tA, const Team* tB, double& expectedA, double& expectedB);
 bool CheckTeam(const HashTable& table, const string& teamName, bool print);
+void InputRosterData(vector<RosterInfo>& rosterData);
+bool SetAutoAdd();
+void CheckTeamAdd(HashTable& table, const string& teamName, bool autoAdd);
+void UpdateRatingFromMatch(HashTable& table, const Match& match);
 
 // UpdateRating : the main function for updating rating
 // -- will call UpdateRatingHelper, and UpdateRatingHelper will call CalCulateExpectedScored
@@ -25,33 +29,11 @@ void UpdateRating(HashTable& table, string& lastMatch)
     cout << lastMatch << endl;
 
     //KEEP all roster data from roster file to "rosterData"
-    ifstream infile;
-    string line;
-    vector<RosterInfo> rosterData; //keep roster data
-    string rosterFileName;
-    cout << "Roster file (no .txt) or print \"no\": ";
-    cin >> rosterFileName;
-    if (rosterFileName != "no") //rosterFileName = no means no roster file
-    {
-        rosterFileName += ".txt";
-        infile.open(rosterFileName.c_str());
-
-        if (!infile.is_open())
-        {
-            cerr << "Cannot open roster file." << endl;
-            return;
-        }
-
-        getline(infile, line);
-        while (infile.good())
-        {
-            rosterData.push_back(RosterInfo(line));
-            getline(infile, line);
-        }
-        infile.close();
-    }
+    vector<RosterInfo> rosterData;
+    InputRosterData(rosterData);
 
     //Open match file
+    ifstream infile;
     string matchFileName;
     cout << "Match file (no .txt): ";
     cin >> matchFileName;
@@ -65,20 +47,11 @@ void UpdateRating(HashTable& table, string& lastMatch)
 
     //Feature: add unknown team automatically or manually?
     //autoAdd = true -- automatically, false -- manually
-    string addString;
-    bool autoAdd = false;
-    cout << "Add all unknown teams automatically? \"yes\" or \"no\": ";
-    cin >> addString;
-    while (addString != "yes" && addString != "no")
-    {
-        cout << "type again" << endl;
-        cin >> addString;
-    }
-    if (addString == "yes")
-        autoAdd = true;
+    bool autoAdd = SetAutoAdd();
 
     //RUN through matches
     int rosterInfoIdx = 0;
+    string line;
     getline(infile, line);
     while (infile.good())
     {
@@ -103,46 +76,57 @@ void UpdateRating(HashTable& table, string& lastMatch)
 void UpdateRatingHelper(HashTable& table, const Match& match, bool autoAdd)
 {
     //Check if we have the teams in our record. Is this a new team?
-    if (!CheckTeam(table, match.WinTeam(), false))  //Check if we have the winning team
-    {
-    	if (autoAdd == false)   //if not autoAdd - asks user
-        {
-            cout << "UpdateRating: we don't have the team " << match.WinTeam() << endl;
-            cout << "Want to \"add\" it or \"exit\" the function: ";
-            string command;
-            cin >> command;
-            while (command != "add" && command != "exit")
-            {
-                cout << "type again!";
-                cin >> command;
-            }
-            if (command == "exit")
-                return;
-        }
-        table.Insert(match.WinTeam(), 1200.0);
-        cout << "AddTeam " << match.WinTeam() << " successfully" << endl;
-    }
+    CheckTeamAdd(table, match.WinTeam(), autoAdd);
+    CheckTeamAdd(table, match.LoseTeam(), autoAdd);
+    UpdateRatingFromMatch(table, match);
+}
 
-    if (!CheckTeam(table, match.LoseTeam(), false)) //Check if we have the winning team
+void InputRosterData(vector<RosterInfo>& rosterData)
+{
+    ifstream infile;
+    string line;
+    string rosterFileName;
+    cout << "Roster file (no .txt) or print \"no\": ";
+    cin >> rosterFileName;
+    if (rosterFileName != "no") //rosterFileName = no means no roster file
     {
-    	if (autoAdd == false)   //if not autoAdd - asks user
-        {
-            cout << "UpdateRating: we don't have the team " << match.LoseTeam() << endl;
-            cout << "Want to \"add\" it or \"exit\" the function: ";
-            string command;
-            cin >> command;
-            while (command != "add" && command != "exit")
-            {
-                cout << "type again!";
-                cin >> command;
-            }
-            if (command == "exit")
-                return;
-        }
-        table.Insert(match.LoseTeam(), 1200.0);
-        cout << "AddTeam " << match.LoseTeam() << " successfully" << endl;
-    }
+        rosterFileName += ".txt";
+        infile.open(rosterFileName.c_str());
 
+        if (!infile.is_open())
+        {
+            cerr << "Cannot open roster file." << endl;
+            return;
+        }
+
+        getline(infile, line);
+        while (infile.good())
+        {
+            rosterData.push_back(RosterInfo(line));
+            getline(infile, line);
+        }
+        infile.close();
+    }
+}
+
+bool SetAutoAdd()
+{
+    string addString;
+    bool autoAdd = false;
+    cout << "Add all unknown teams automatically? \"yes\" or \"no\": ";
+    cin >> addString;
+    while (addString != "yes" && addString != "no")
+    {
+        cout << "type again" << endl;
+        cin >> addString;
+    }
+    if (addString == "yes")
+        autoAdd = true;
+    return autoAdd;
+}
+
+void UpdateRatingFromMatch(HashTable& table, const Match& match)
+{
     //teamA - win, teamB - lose
     Team* tAptr = table.Search(match.WinTeam()); //use method Search of HashTable class
     Team* tBptr = table.Search(match.LoseTeam());
@@ -161,6 +145,29 @@ void UpdateRatingHelper(HashTable& table, const Match& match, bool autoAdd)
     {
         tAptr->AddRating(K1 * (1 + match.WinScore() + K2 - 2 * expectedA));
         tBptr->AddRating(K1 * (1 - (match.WinScore() + K2) - 2 * expectedB));
+    }
+}
+
+void CheckTeamAdd(HashTable& table, const string& teamName, bool autoAdd)
+{
+    if (!CheckTeam(table, teamName, false)) //Check if we have the winning team
+    {
+    	if (autoAdd == false)   //if not autoAdd - asks user
+        {
+            cout << "UpdateRating: we don't have the team " << teamName << endl;
+            cout << "Want to \"add\" it or \"exit\" the function: ";
+            string command;
+            cin >> command;
+            while (command != "add" && command != "exit")
+            {
+                cout << "type again!";
+                cin >> command;
+            }
+            if (command == "exit")
+                return;
+        }
+        table.Insert(teamName, 1200.0);
+        cout << "AddTeam " << teamName << " successfully" << endl;
     }
 }
 
