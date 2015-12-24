@@ -139,7 +139,7 @@ void UpdateRatingFromMatch(HashTable& table, const Match& match)
     {
         //k1 weight is built in AddRating
         tAptr->AddRating(K1 * (1 - 2 * expectedA));
-        tBptr->AddRating(K2 * (1 - 2 * expectedB));
+        tBptr->AddRating(K1 * (1 - 2 * expectedB));
     }
     else
     {
