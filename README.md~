@@ -1,6 +1,7 @@
-# sieu-repos
+# csgo-elo
 
-Current Work: Elo rating system for CSGO teams. \n
-k1 = 25.9907 \n
-k2 = 0.0674658 \n
-Loss = 0.203762 \n
+A Program gets competitive CSGO results to rate CSGO teams.
+
+The rating will give out probability of a team winning next match.
+
+The probability can be used with Kelly Criterion to take advantage of house' odds.
