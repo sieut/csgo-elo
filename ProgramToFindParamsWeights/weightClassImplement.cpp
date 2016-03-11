@@ -45,7 +45,7 @@ void TeamList::Insert(Team* tptr)
 	size++;
 }
 
-int TeamList::Delete(Team* tptr);
+/*int TeamList::Delete(Team* tptr)
 {
 	// list is empty
 	if (!head)
@@ -77,7 +77,7 @@ int TeamList::Delete(Team* tptr);
 	delete temp2
 	size--;				
 	return 1;
-}
+}*/
 
 //TeamWithNeighbor
 
@@ -93,7 +93,7 @@ TeamWithNeighbor::TeamWithNeighbor(const string& nameInput) : Team(nameInput)
 
 double TeamWithNeighbor::AverageNeighbor()
 {
-	Node *temp = neighbor->head;
+	Node *temp = neighbor.head;
 	double sumRating = 0;
 	while (temp != NULL)
 	{
@@ -110,8 +110,8 @@ void TeamWithNeighbor::AddNeighbor(Team *teamPtr)
 }
 
 //MatchWithWeight
-int Match::tmin = -1;
-int Match::tmax = -1;
+int MatchWithWeight::tmin = -1;
+int MatchWithWeight::tmax = -1;
 
 MatchWithWeight::MatchWithWeight() : Match(), weight(-1)
 {
