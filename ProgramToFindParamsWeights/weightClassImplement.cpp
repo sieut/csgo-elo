@@ -108,6 +108,10 @@ void TeamWithNeighbor::AddNeighbor(TeamWithNeighbor *teamPtr)
 	neighbor.Insert(teamPtr);
 	numNeighbor = neighbor.size;
 }
+friend ostream& operator<<(ostream& os, const TeamWithNeighbor& t)
+{
+	os << (Team &) t << " " << t.AverageNeighbor();
+}
 
 //MatchWithWeight
 int MatchWithWeight::tmin = 0;

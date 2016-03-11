@@ -32,6 +32,7 @@ public:
 	int NumNeighbor() const { return numNeighbor; }
 	double AverageNeighbor();
 	void AddNeighbor(TeamWithNeighbor *teamPtr);
+	friend ostream& operator<<(ostream& os, const TeamWithNeighbor& t);
 };
 
 
