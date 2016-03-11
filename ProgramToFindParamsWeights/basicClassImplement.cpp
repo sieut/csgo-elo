@@ -38,7 +38,7 @@ double Team::K1weight() const
 
 void Team::AddRating(double added)
 {
-    rating += K1weight() * added;
+    rating += added;
     numPlay++;
 }
 

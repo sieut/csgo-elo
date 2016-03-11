@@ -30,7 +30,7 @@ public:
 	TeamWithNeighbor();
 	TeamWithNeighbor(const string& nameInput);
 	int NumNeighbor() const { return numNeighbor; }
-	double AverageNeighbor();
+	double AverageNeighbor() const;
 	void AddNeighbor(TeamWithNeighbor *teamPtr);
 	friend ostream& operator<<(ostream& os, const TeamWithNeighbor& t);
 };
@@ -39,11 +39,10 @@ public:
 class MatchWithWeight : public Match
 {
 private:
-	double weight;
 public:
 	MatchWithWeight();
 	MatchWithWeight(const string& input);
-	double Weight() const { return weight; }
+	double Weight() const;
 	static int tmin;
 	static int tmax;
 };

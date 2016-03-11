@@ -15,6 +15,8 @@ void CreateMatchVector(vector<MatchWithWeight>& matchData);
 void CreateRosterVector(vector<RosterInfo>& rosterData);
 void CalCulateExpectedScore(const Team& tA, const Team& tB, double& expectedA, double& expectedB);
 double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& teamData, double eta, double lambda);
+double LearningRate(int currentIter, int maxIter);
+void FinalizeLoss(double &loss, vector<TeamWithNeighbor>& teamData, double lambda);
 //implementation in another file
 
 int main()
@@ -33,13 +35,15 @@ int main()
     cout << "Name of output file (no .txt): ";
     cin >> outputFileName;
     outputFileName += ".txt";
+    ofstream outFile(outputFileName.c_str());
 
     double eta, lambda; 
     int maxIter;
     double lambdaStart, lambdaStop;
     int etaStep, lambdaStep;
 
-    cout << "maxIter-" << endl;
+
+/*    cout << "maxIter-" << endl;
     cin >> maxIter;
     cout << "lambda-" << endl;
     cout << "start: ";
@@ -49,9 +53,6 @@ int main()
     cout << "step: ";
     cin >> lambdaStep;
 
-    cout << "Name of output file (no .txt): ";
-    cin >> outputFileName;
-    outputFileName += ".txt";
 
     double lambdaEachStep = (lambdaStop - lambdaStart) / lambdaStep;
 
@@ -60,7 +61,6 @@ int main()
     int keepIter;
     double keepLambda;
 
-    ofstream outFile(outputFileName.c_str());
     for (int iter = 1; iter <= maxIter; iter++)
     {
         eta = LearningRate(iter, maxIter);
@@ -74,7 +74,7 @@ int main()
                 /*while (rosterData.at(rosterInfoIdx).Date() == matchData.at(i).Date()) {     // NEW: Adjust teams' numPlay due to roster change
                     teamData.at(rosterData.at(rosterInfoIdx).Index()).AdjustNumPlay();
                     rosterInfoIdx += 1;
-                }*/
+                }
                 loseProb += UpdateRating(matchData.at(i), teamData, eta, lambda);
             }
 
@@ -99,17 +99,17 @@ int main()
     }
 
     cout << "Lowest L: " << lowestLoseProb << endl;
-    cout << "at eta: " << keepEta << " at lambda: " << keepLambda << endl;
+    cout << "at iter: " << keepIter << " at lambda: " << keepLambda << endl;*/
 
 
+    int dummy;
 
-/*
-    for (int i = 0; i < matchData.size(); i++)
+    for (int i = 0; i < 3; i++)
     {
-        UpdateRating(matchData.at(i), teamData, k1, k2);
-//        outFile << "Match#" << i + 1 << endl;
-//        outFile << teamData.at(matchData.at(i).WinTeam()) << endl;
-//        outFile << teamData.at(matchData.at(i).LoseTeam()) << endl;
+        UpdateRating(matchData.at(i), teamData, 0.735, 0.77);
+        outFile << "Match#" << i + 1 << endl;
+        outFile << teamData.at(matchData.at(i).WinTeam()) << endl;
+        outFile << teamData.at(matchData.at(i).LoseTeam()) << endl;
 //        if (matchData.at(i).LoseTeam() == 3 || matchData.at(i).WinTeam() == 3)
 //        {
 //            outFile << "Match#" << i + 1 << endl;
@@ -117,12 +117,19 @@ int main()
 //            outFile << teamData.at(matchData.at(i).LoseTeam()) << endl;
 //        }
     }
-    for (int i = 0; i < teamData.size(); i++)
+/*    for (int i = 0; i < teamData.size(); i++)
     {
         outFile << teamData.at(i) << endl;
     }*/
+    cin >> dummy;
 
 	return 0;
+}
+
+void MatchAddNeighbor (vector<TeamWithNeighbor>& teamData, vector<MatchWithWeight>& matchData))
+{
+    
+    
 }
 
 double LearningRate(int currentIter, int maxIter) {
@@ -142,29 +149,45 @@ double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& team
 {
     //teamA = teamData.at(match.WinTeam), teamB = teamData.at(match.LostTeam)
     double expectedA, expectedB;
-    TeamWithNeighbor tA = teamData.at(match.WinTeam());
-    TeamWithNeighbor tB = teamData.at(match.WinTeam());
-    CalCulateExpectedScore(tA, tB, expectedA, expectedB);
+    TeamWithNeighbor *tA = &teamData.at(match.WinTeam());
+    TeamWithNeighbor *tB = &teamData.at(match.LoseTeam());
+    CalCulateExpectedScore(*tA, *tB, expectedA, expectedB);
+    cout << "tA: " << *tA << endl;
+    cout << "tB: " << *tB << endl;
+    cout << "expectedA: " << expectedA << endl;
+    cout << "expectedB: " << expectedB << endl;
+    tA->AddNeighbor(tB);
+    tB->AddNeighbor(tA);
 
     if (match.isTie())
     {
         //k1 weight is built in AddRating
-        teamData.at(match.WinTeam()).AddRating(-eta * (match.Weight() * (expectedA - 0.5) * expectedA * (1 - expectedA) 
-                + (lambda / tA.NumNeighbor()) * 
-                (tA.Rating() - tA.AverageNeighbor())));
-        teamData.at(match.LoseTeam()).AddRating(-eta * (match.Weight() * (expectedB - 0.5) * expectedB * (1 - expectedB) 
-                + (lambda / tB.NumNeighbor()) * 
-                (tB.Rating() - tB.AverageNeighbor())));
+        tA->AddRating(-eta * (match.Weight() * (expectedA - 0.5) * expectedA * (1 - expectedA) 
+                + (lambda / tA->NumNeighbor()) * 
+                (tA->Rating() - tA->AverageNeighbor())));
+        tB->AddRating(-eta * (match.Weight() * (expectedB - 0.5) * expectedB * (1 - expectedB) 
+                + (lambda / tB->NumNeighbor()) * 
+                (tB->Rating() - tB->AverageNeighbor())));
         return match.Weight() * pow((expectedA - 0.5), 2);
     }
     else
     {
-        teamData.at(match.WinTeam()).AddRating(-eta * (match.Weight() * (expectedA - 1) * expectedA * (1 - expectedA) 
-                + (lambda / tA.NumNeighbor()) * 
-                (tA.Rating() - tA.AverageNeighbor())));
-        teamData.at(match.LoseTeam()).AddRating(-eta * (match.Weight() * (expectedB - 0) * expectedB * (1 - expectedB) 
-                + (lambda / tB.NumNeighbor()) * 
-                (tB.Rating() - tB.AverageNeighbor())));
+        tA->AddRating(-eta * (match.Weight() * (expectedA - 1) * expectedA * (1 - expectedA) 
+                + (lambda / tA->NumNeighbor()) * 
+                (tA->Rating() - tA->AverageNeighbor())));
+        cout << "NumNeighborA: " << tA->NumNeighbor() << endl;
+        cout << "avg: " << tA->AverageNeighbor() << endl;
+        cout << "weight: " << match.Weight() << endl;
+        cout << "tmax: " << MatchWithWeight::tmax << endl;
+        cout << "add A " << -eta * (match.Weight() * (expectedA - 1) * expectedA * (1 - expectedA) 
+                + (lambda / tA->NumNeighbor()) * 
+                (tA->Rating() - tA->AverageNeighbor())) << endl;
+        tB->AddRating(-eta * (match.Weight() * (expectedB - 0) * expectedB * (1 - expectedB) 
+                + (lambda / tB->NumNeighbor()) * 
+                (tB->Rating() - tB->AverageNeighbor())));
+        cout << "add B" << -eta * (match.Weight() * (expectedB - 0) * expectedB * (1 - expectedB) 
+                + (lambda / tB->NumNeighbor()) * 
+                (tB->Rating() - tB->AverageNeighbor())) << endl;
         return match.Weight() * pow((expectedA - 1.0), 2);
     }
 }

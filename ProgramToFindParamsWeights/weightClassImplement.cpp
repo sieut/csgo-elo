@@ -21,6 +21,8 @@ TeamList::~TeamList()
 
 bool TeamList::Has(Team *tptr)
 {
+	if (!head)
+		return false;
 	Node *temp = head;
 	// loop through the end or till find tptr
 	while (temp != NULL && temp->team != tptr)
@@ -91,7 +93,7 @@ TeamWithNeighbor::TeamWithNeighbor(const string& nameInput) : Team(nameInput)
 	numNeighbor = 0;
 }
 
-double TeamWithNeighbor::AverageNeighbor()
+double TeamWithNeighbor::AverageNeighbor() const
 {
 	Node *temp = neighbor.head;
 	double sumRating = 0;
@@ -108,22 +110,27 @@ void TeamWithNeighbor::AddNeighbor(TeamWithNeighbor *teamPtr)
 	neighbor.Insert(teamPtr);
 	numNeighbor = neighbor.size;
 }
-friend ostream& operator<<(ostream& os, const TeamWithNeighbor& t)
+
+ostream& operator<<(ostream& os, const TeamWithNeighbor& t)
 {
-	os << (Team &) t << " " << t.AverageNeighbor();
+	os << (const Team &) t << " " << t.AverageNeighbor();
 }
 
 //MatchWithWeight
 int MatchWithWeight::tmin = 0;
 int MatchWithWeight::tmax = -1;
 
-MatchWithWeight::MatchWithWeight() : Match(), weight(-1)
+MatchWithWeight::MatchWithWeight() : Match()
 {
 }
 
 
 MatchWithWeight::MatchWithWeight(const string& input) : Match(input)
 {
-	weight = (static_cast<double>(1 + Week() - tmin)/(1 + tmax - tmin));
-	weight = weight * weight;
+}
+
+double MatchWithWeight::Weight() const
+{
+	double weight = (static_cast<double>(1 + Week() - tmin)/(1 + tmax - tmin));
+	return weight * weight;
 }
