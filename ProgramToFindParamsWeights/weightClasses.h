@@ -29,8 +29,9 @@ private:
 public:
 	TeamWithNeighbor();
 	TeamWithNeighbor(const string& nameInput);
+	int NumNeighbor() const { return numNeighbor; }
 	double AverageNeighbor();
-	void AddNeighbor(Team *teamPtr);
+	void AddNeighbor(TeamWithNeighbor *teamPtr);
 };
 
 
