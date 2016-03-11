@@ -29,9 +29,37 @@ int main()
     cout << "Tmax: ";
     cin >> MatchWithWeight::tmax;
 
+    double k1, k2;
+	double k1Start, k1Stop;
+    double k2Start, k2Stop;
+    int k1Step, k2Step;
+    string outputFileName;
+
+    cout << "k1-" << endl;
+    cout << "start: ";
+    cin >> k1Start;
+    cout << "stop: ";
+    cin >> k1Stop;
+    cout << "step: ";
+    cin >> k1Step;
+    cout << "k2-" << endl;
+    cout << "start: ";
+    cin >> k2Start;
+    cout << "stop: ";
+    cin >> k2Stop;
+    cout << "step: ";
+    cin >> k2Step;
+
     cout << "Name of output file (no .txt): ";
     cin >> outputFileName;
     outputFileName += ".txt";
+
+    double k1EachStep = (k1Stop - k1Start) / k1Step;
+    double k2EachStep = (k2Stop - k2Start) / k2Step;
+
+    double loseProb = 0.0;
+    double lowestLoseProb = 100.0;
+    double keepK1, keepK2;
 
     ofstream outFile(outputFileName.c_str());
     for (k1 = k1Start; k1 <= k1Stop; k1 += k1EachStep)
@@ -101,43 +129,31 @@ double LearningRate(int currentIter, int maxIter) {
     return pow((1 + 0.1*maxIter) / (currentIter + 0.1*maxIter), 0.602);
 }
 
-void CalCulateExpectedScore(const TeamWithNeighbor& tA, const TeamWithNeighbor& tB, 
-    double& expectedA, double& expectedB)
+void CalCulateExpectedScore(const Team& tA, const Team& tB, double& expectedA, double& expectedB)
 {
 	expectedA = 1 / ( 1 + exp(tB.Rating() - tA.Rating()) );
 	expectedB = 1 - expectedA;
 }
 
 //Return added lose probability
-double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& teamData, 
-    double eta, double lambda)
+double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& teamData, double eta, double lambda)
 {
     //teamA = teamData.at(match.WinTeam), teamB = teamData.at(match.LostTeam)
     double expectedA, expectedB;
-    TeamWithNeighbor tA = teamData.at(match.WinTeam());
-    TeamWithNeighbor tB = teamData.at(match.WinTeam());
-    CalCulateExpectedScore(tA, tB, expectedA, expectedB);
+    CalCulateExpectedScore(teamData.at(match.WinTeam()), teamData.at(match.LoseTeam()), expectedA, expectedB);
 
     if (match.isTie())
     {
         //k1 weight is built in AddRating
-        teamData.at(match.WinTeam()).AddRating(-eta * (match.Weight() * (expectedA - 0.5) * expectedA * (1 - expectedA) 
-                + (lambda / tA.NumNeighbor()) * 
-                (tA.Rating() - tA.AverageNeighbor())));
-        teamData.at(match.LoseTeam()).AddRating(-eta * (match.Weight() * (expectedB - 0.5) * expectedB * (1 - expectedB) 
-                + (lambda / tB.NumNeighbor()) * 
-                (tB.Rating() - tB.AverageNeighbor())));
-        return match.Weight() * pow((expectedA - 0.5), 2);
+        teamData.at(match.WinTeam()).AddRating();
+        teamData.at(match.LoseTeam()).AddRating(k1 * (1 - 2 * expectedB));
+        return pow((expectedA - 0.5), 2);
     }
     else
     {
-        teamData.at(match.WinTeam()).AddRating(-eta * (match.Weight() * (expectedA - 1) * expectedA * (1 - expectedA) 
-                + (lambda / tA.NumNeighbor()) * 
-                (tA.Rating() - tA.AverageNeighbor())));
-        teamData.at(match.LoseTeam()).AddRating(-eta * (match.Weight() * (expectedB - 0) * expectedB * (1 - expectedB) 
-                + (lambda / tB.NumNeighbor()) * 
-                (tB.Rating() - tB.AverageNeighbor())));
-        return match.Weight() * pow((expectedA - 1.0), 2);
+        teamData.at(match.WinTeam()).AddRating(k1 * (1 + match.WinScore() + k2 - 2 * expectedA));
+        teamData.at(match.LoseTeam()).AddRating(k1 * (1 - (match.WinScore() + k2) - 2 * expectedB));
+        return pow((expectedA - 1.0), 2);
     }
 
 }
