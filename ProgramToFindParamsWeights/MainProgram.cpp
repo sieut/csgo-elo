@@ -157,10 +157,8 @@ double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& team
     TeamWithNeighbor *tA = &teamData.at(match.WinTeam());
     TeamWithNeighbor *tB = &teamData.at(match.LoseTeam());
     CalCulateExpectedScore(*tA, *tB, expectedA, expectedB);
-    cout << "tA: " << *tA << endl;
-    cout << "tB: " << *tB << endl;
-    cout << "expectedA: " << expectedA << endl;
-    cout << "expectedB: " << expectedB << endl;
+/*    cout << "expectedA: " << expectedA << endl;
+    cout << "expectedB: " << expectedB << endl;*/
     tA->AddNeighbor(tB);
     tB->AddNeighbor(tA);
 
@@ -180,19 +178,9 @@ double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& team
         tA->AddRating(-eta * (match.Weight() * (expectedA - 1) * expectedA * (1 - expectedA) 
                 + (lambda / tA->NumNeighbor()) * 
                 (tA->Rating() - tA->AverageNeighbor())));
-        cout << "NumNeighborA: " << tA->NumNeighbor() << endl;
-        cout << "avg: " << tA->AverageNeighbor() << endl;
-        cout << "weight: " << match.Weight() << endl;
-        cout << "tmax: " << MatchWithWeight::tmax << endl;
-        cout << "add A " << -eta * (match.Weight() * (expectedA - 1) * expectedA * (1 - expectedA) 
-                + (lambda / tA->NumNeighbor()) * 
-                (tA->Rating() - tA->AverageNeighbor())) << endl;
         tB->AddRating(-eta * (match.Weight() * (expectedB - 0) * expectedB * (1 - expectedB) 
                 + (lambda / tB->NumNeighbor()) * 
                 (tB->Rating() - tB->AverageNeighbor())));
-        cout << "add B" << -eta * (match.Weight() * (expectedB - 0) * expectedB * (1 - expectedB) 
-                + (lambda / tB->NumNeighbor()) * 
-                (tB->Rating() - tB->AverageNeighbor())) << endl;
         return match.Weight() * pow((expectedA - 1.0), 2);
     }
 }
