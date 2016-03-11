@@ -38,7 +38,6 @@ int main()
     double etaStart, etaStop;
     double lambdaStart, lambdaStop;
     int etaStep, lambdaStep;
-    string outputFileName;
 
     cout << "eta-" << endl;
     cout << "start: ";
