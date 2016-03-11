@@ -29,9 +29,37 @@ int main()
     cout << "Tmax: ";
     cin >> MatchWithWeight::tmax;
 
+    double k1, k2;
+	double k1Start, k1Stop;
+    double k2Start, k2Stop;
+    int k1Step, k2Step;
+    string outputFileName;
+
+    cout << "k1-" << endl;
+    cout << "start: ";
+    cin >> k1Start;
+    cout << "stop: ";
+    cin >> k1Stop;
+    cout << "step: ";
+    cin >> k1Step;
+    cout << "k2-" << endl;
+    cout << "start: ";
+    cin >> k2Start;
+    cout << "stop: ";
+    cin >> k2Stop;
+    cout << "step: ";
+    cin >> k2Step;
+
     cout << "Name of output file (no .txt): ";
     cin >> outputFileName;
     outputFileName += ".txt";
+
+    double k1EachStep = (k1Stop - k1Start) / k1Step;
+    double k2EachStep = (k2Stop - k2Start) / k2Step;
+
+    double loseProb = 0.0;
+    double lowestLoseProb = 100.0;
+    double keepK1, keepK2;
 
     ofstream outFile(outputFileName.c_str());
     for (k1 = k1Start; k1 <= k1Stop; k1 += k1EachStep)
