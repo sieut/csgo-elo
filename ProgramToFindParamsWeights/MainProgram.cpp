@@ -38,7 +38,6 @@ int main()
     int maxIter;
     double lambdaStart, lambdaStop;
     int etaStep, lambdaStep;
-    string outputFileName;
 
     cout << "maxIter-" << endl;
     cin >> maxIter;
