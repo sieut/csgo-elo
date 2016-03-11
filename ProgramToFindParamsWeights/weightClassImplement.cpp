@@ -110,7 +110,7 @@ void TeamWithNeighbor::AddNeighbor(TeamWithNeighbor *teamPtr)
 }
 
 //MatchWithWeight
-int MatchWithWeight::tmin = -1;
+int MatchWithWeight::tmin = 0;
 int MatchWithWeight::tmax = -1;
 
 MatchWithWeight::MatchWithWeight() : Match(), weight(-1)
