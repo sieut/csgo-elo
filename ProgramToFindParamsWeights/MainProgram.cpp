@@ -17,6 +17,7 @@ void CalCulateExpectedScore(const Team& tA, const Team& tB, double& expectedA, d
 double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& teamData, double eta, double lambda);
 double LearningRate(int currentIter, int maxIter);
 void FinalizeLoss(double &loss, vector<TeamWithNeighbor>& teamData, double lambda);
+void MatchAddNeighbor (vector<TeamWithNeighbor>& teamData, vector<MatchWithWeight>& matchData);
 //implementation in another file
 
 int main()
@@ -25,6 +26,7 @@ int main()
 	CreateTeamVector(teamData);
 	vector<MatchWithWeight> matchData;
 	CreateMatchVector(matchData);
+    MatchAddNeighbor(teamData, matchData);
     //vector<RosterInfo> rosterData;
     //CreateRosterVector(rosterData);
 
@@ -126,9 +128,12 @@ int main()
 	return 0;
 }
 
-void MatchAddNeighbor (vector<TeamWithNeighbor>& teamData, vector<MatchWithWeight>& matchData))
+void MatchAddNeighbor (vector<TeamWithNeighbor>& teamData, vector<MatchWithWeight>& matchData)
 {
-    
+    for (unsigned int i = 0; i < matchData.size(); i++) {
+        teamData.at(match.WinTeam()).AddNeighbor(&teamData.at(match.LoseTeam()));
+        teamData.at(match.LoseTeam()).AddNeighbor(&teamData.at(match.WinTeam()));
+    }
     
 }
 
