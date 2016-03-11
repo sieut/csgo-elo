@@ -14,7 +14,7 @@ void CreateTeamVector(vector<TeamWithNeighbor>& teamData);
 void CreateMatchVector(vector<MatchWithWeight>& matchData);
 void CreateRosterVector(vector<RosterInfo>& rosterData);
 void CalCulateExpectedScore(const Team& tA, const Team& tB, double& expectedA, double& expectedB);
-double UpdateRating(const Match& match, vector<Team>& teamData, double k1, double k2);
+double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& teamData, double eta, double lambda);
 //implementation in another file
 
 int main()
@@ -25,6 +25,9 @@ int main()
 	CreateMatchVector(matchData);
     //vector<RosterInfo> rosterData;
     //CreateRosterVector(rosterData);
+
+    cout << "Tmax: ";
+    cin >> MatchWithWeight::tmax;
 
     double k1, k2;
 	double k1Start, k1Stop;
@@ -133,7 +136,7 @@ void CalCulateExpectedScore(const Team& tA, const Team& tB, double& expectedA, d
 }
 
 //Return added lose probability
-double UpdateRating(const MatchWithWeight& match, vector<Team>& teamData, double eta, double lambda)
+double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& teamData, double eta, double lambda)
 {
     //teamA = teamData.at(match.WinTeam), teamB = teamData.at(match.LostTeam)
     double expectedA, expectedB;
