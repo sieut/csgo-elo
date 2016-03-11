@@ -29,6 +29,7 @@ int main()
     cout << "Tmax: ";
     cin >> MatchWithWeight::tmax;
 
+    string outputFileName;
     cout << "Name of output file (no .txt): ";
     cin >> outputFileName;
     outputFileName += ".txt";
