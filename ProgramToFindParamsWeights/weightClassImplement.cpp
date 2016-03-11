@@ -103,7 +103,7 @@ double TeamWithNeighbor::AverageNeighbor()
 	return sumRating / numNeighbor;
 }
 
-void TeamWithNeighbor::AddNeighbor(Team *teamPtr)
+void TeamWithNeighbor::AddNeighbor(TeamWithNeighbor *teamPtr)
 {
 	neighbor.Insert(teamPtr);
 	numNeighbor = neighbor.size;
