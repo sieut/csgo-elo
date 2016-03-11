@@ -82,8 +82,6 @@ int main()
                 loseProb += UpdateRating(matchData.at(i), teamData, eta, lambda);
             }
 
-            loseProb = loseProb / matchData.size();
-
             if (loseProb < lowestLoseProb)
             {
                 lowestLoseProb = loseProb;
@@ -171,7 +169,13 @@ double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& team
                 (tB.Rating() - tB.AverageNeighbor())));
         return match.Weight() * pow((expectedA - 1.0), 2);
     }
+}
 
+void FinalizeLoss(double &loss, vector<TeamWithNeighbor>& teamData, double lambda) {
+    for (unsigned int i = 0; i < teamData.size(); i++) {
+        loss += lambda * 
+            pow((teamData.at(i).Rating() - teamData.at(i).AverageNeighbor()), 2);
+    }
 }
 
 void CreateTeamVector(vector<TeamWithNeighbor>& teamData)
