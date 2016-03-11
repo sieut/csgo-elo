@@ -45,7 +45,7 @@ int main()
     int etaStep, lambdaStep;
 
 
-/*    cout << "maxIter-" << endl;
+    cout << "maxIter-" << endl;
     cin >> maxIter;
     cout << "lambda-" << endl;
     cout << "start: ";
@@ -77,7 +77,7 @@ int main()
                     teamData.at(rosterData.at(rosterInfoIdx).Index()).AdjustNumPlay();
                     rosterInfoIdx += 1;
                 }
-                loseProb += UpdateRating(matchData.at(i), teamData, eta, lambda);
+                loseProb += UpdateRating(matchData.at(i), teamData, eta, lambda);*/
             }
 
             FinalizeLoss(loseProb, teamData, lambda);
@@ -101,10 +101,10 @@ int main()
     }
 
     cout << "Lowest L: " << lowestLoseProb << endl;
-    cout << "at iter: " << keepIter << " at lambda: " << keepLambda << endl;*/
+    cout << "at iter: " << keepIter << " at lambda: " << keepLambda << endl;
 
 
-    int dummy;
+/*    int dummy;
 
     for (int i = 0; i < 3; i++)
     {
@@ -118,12 +118,12 @@ int main()
 //            outFile << teamData.at(matchData.at(i).WinTeam()) << endl;
 //            outFile << teamData.at(matchData.at(i).LoseTeam()) << endl;
 //        }
-    }
-/*    for (int i = 0; i < teamData.size(); i++)
+    }*/
+
+    for (int i = 0; i < teamData.size(); i++)
     {
         outFile << teamData.at(i) << endl;
-    }*/
-    cin >> dummy;
+    }
 
 	return 0;
 }
@@ -131,8 +131,8 @@ int main()
 void MatchAddNeighbor (vector<TeamWithNeighbor>& teamData, vector<MatchWithWeight>& matchData)
 {
     for (unsigned int i = 0; i < matchData.size(); i++) {
-        teamData.at(match.WinTeam()).AddNeighbor(&teamData.at(match.LoseTeam()));
-        teamData.at(match.LoseTeam()).AddNeighbor(&teamData.at(match.WinTeam()));
+        teamData.at(matchData.at(i).WinTeam()).AddNeighbor(&teamData.at(matchData.at(i).LoseTeam()));
+        teamData.at(matchData.at(i).LoseTeam()).AddNeighbor(&teamData.at(matchData.at(i).WinTeam()));
     }
     
 }
