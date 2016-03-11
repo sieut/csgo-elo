@@ -6,17 +6,19 @@
 #include <string>
 using namespace std;
 
+struct Node { Team* team; Node* next; };
+
 class TeamList
 {
 public:
-	struct Node { Team* team; Node* next; };
+	
 	Node *head;
 	int size;
 	TeamList() { head = NULL; size = 0; }
 	~TeamList();
 	bool Has(Team *tptr);
     void Insert(Team *tptr);
-    int Delete(Team *tptr);
+    //int Delete(Team *tptr);
 };
 
 class TeamWithNeighbor : public Team
@@ -35,11 +37,11 @@ public:
 class MatchWithWeight : public Match
 {
 private:
-	int weight;
+	double weight;
 public:
 	MatchWithWeight();
 	MatchWithWeight(const string& input);
-	int Weight() const { return weight; }
+	double Weight() const { return weight; }
 	static int tmin;
 	static int tmax;
 };
