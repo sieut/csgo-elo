@@ -137,12 +137,8 @@ void CalCulateExpectedScore(const TeamWithNeighbor& tA, const TeamWithNeighbor& 
 }
 
 //Return added lose probability
-<<<<<<< HEAD
 double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& teamData, 
     double eta, double lambda)
-=======
-double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& teamData, double eta, double lambda)
->>>>>>> f36b06fc78a9288ad4f77f6d96c6bcd7fa90b211
 {
     //teamA = teamData.at(match.WinTeam), teamB = teamData.at(match.LostTeam)
     double expectedA, expectedB;
