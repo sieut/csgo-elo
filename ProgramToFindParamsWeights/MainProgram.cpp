@@ -122,14 +122,18 @@ int main()
 	return 0;
 }
 
+double LearningRate(int currentIter, int maxIter) {
+    return pow((1 + 0.1*maxIter) / (currentIter + 0.1*maxIter), 0.602);
+}
+
 void CalCulateExpectedScore(const Team& tA, const Team& tB, double& expectedA, double& expectedB)
 {
-	expectedA = 1 / ( 1 + pow(10, (tB.Rating() - tA.Rating()) / 400) );
+	expectedA = 1 / ( 1 + exp(tB.Rating() - tA.Rating()) );
 	expectedB = 1 - expectedA;
 }
 
 //Return added lose probability
-double UpdateRating(const Match& match, vector<Team>& teamData, double k1, double k2)
+double UpdateRating(const MatchWithWeight& match, vector<Team>& teamData, double eta, double lambda)
 {
     //teamA = teamData.at(match.WinTeam), teamB = teamData.at(match.LostTeam)
     double expectedA, expectedB;
@@ -138,8 +142,8 @@ double UpdateRating(const Match& match, vector<Team>& teamData, double k1, doubl
     if (match.isTie())
     {
         //k1 weight is built in AddRating
-        teamData.at(match.WinTeam()).AddRating(k1 * (1 - 2 * expectedA));
-        teamData.at(match.LoseTeam()).AddRating(k2 * (1 - 2 * expectedB));
+        teamData.at(match.WinTeam()).AddRating();
+        teamData.at(match.LoseTeam()).AddRating(k1 * (1 - 2 * expectedB));
         return pow((expectedA - 0.5), 2);
     }
     else
