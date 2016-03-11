@@ -41,8 +41,6 @@ int main()
 
     cout << "maxIter-" << endl;
     cin >> maxIter;
-    cout << "step: ";
-    cin >> etaStep;
     cout << "lambda-" << endl;
     cout << "start: ";
     cin >> lambdaStart;
