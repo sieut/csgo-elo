@@ -33,10 +33,42 @@ int main()
     cin >> outputFileName;
     outputFileName += ".txt";
 
+    double eta, lambda; 
+    double etaStart, etaStop;
+    double lambdaStart, lambdaStop;
+    int etaStep, lambdaStep;
+    string outputFileName;
+
+    cout << "eta-" << endl;
+    cout << "start: ";
+    cin >> etaStart;
+    cout << "stop: ";
+    cin >> etaStop;
+    cout << "step: ";
+    cin >> etaStep;
+    cout << "lambda-" << endl;
+    cout << "start: ";
+    cin >> lambdaStart;
+    cout << "stop: ";
+    cin >> lambdaStop;
+    cout << "step: ";
+    cin >> lambdaStep;
+
+    cout << "Name of output file (no .txt): ";
+    cin >> outputFileName;
+    outputFileName += ".txt";
+
+    double etaEachStep = (etaStop - etaStart) / etaStep;
+    double lambdaEachStep = (lambdaStop - lambdaStart) / lambdaStep;
+
+    double loseProb = 0.0;
+    double lowestLoseProb = 100.0;
+    double keepEta, keepLambda;
+
     ofstream outFile(outputFileName.c_str());
-    for (k1 = k1Start; k1 <= k1Stop; k1 += k1EachStep)
+    for (eta = etaStart; eta <= etaStop; eta += etaEachStep)
     {
-        for (k2 = k2Start; k2 <= k2Stop; k2 += k2EachStep)
+        for (lambda = lambdaStart; lambda <= lambdaStop; lambda += lambdaEachStep)
         {
             loseProb = 0.0;
             //int rosterInfoIdx = 0;      // NEW: Index over roster changes vector
@@ -47,7 +79,7 @@ int main()
                     teamData.at(rosterData.at(rosterInfoIdx).Index()).AdjustNumPlay();
                     rosterInfoIdx += 1;
                 }*/
-                loseProb += UpdateRating(matchData.at(i), teamData, k1, k2);
+                loseProb += UpdateRating(matchData.at(i), teamData, eta, lambda);
             }
 
             loseProb = loseProb / matchData.size();
@@ -55,12 +87,12 @@ int main()
             if (loseProb < lowestLoseProb)
             {
                 lowestLoseProb = loseProb;
-                keepK1 = k1;
-                keepK2 = k2;
+                keepEta = eta;
+                keepLambda = lambda;
             }
 
             outFile << fixed << setprecision(7);
-            outFile << k1 << " " << k2 << " " << loseProb << endl;
+            outFile << eta << " " << lambda << " " << loseProb << endl;
 
             //Reset Team'stats
             for (int i = 0; i < teamData.size(); i++)
@@ -71,7 +103,7 @@ int main()
     }
 
     cout << "Lowest L: " << lowestLoseProb << endl;
-    cout << "at k1: " << keepK1 << " at k2: " << keepK2 << endl;
+    cout << "at eta: " << keepEta << " at lambda: " << keepLambda << endl;
 
 
 
