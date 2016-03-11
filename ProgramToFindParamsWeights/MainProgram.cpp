@@ -35,15 +35,12 @@ int main()
     outputFileName += ".txt";
 
     double eta, lambda; 
-    double etaStart, etaStop;
+    int maxIter;
     double lambdaStart, lambdaStop;
     int etaStep, lambdaStep;
 
-    cout << "eta-" << endl;
-    cout << "start: ";
-    cin >> etaStart;
-    cout << "stop: ";
-    cin >> etaStop;
+    cout << "maxIter-" << endl;
+    cin >> maxIter;
     cout << "step: ";
     cin >> etaStep;
     cout << "lambda-" << endl;
@@ -58,16 +55,17 @@ int main()
     cin >> outputFileName;
     outputFileName += ".txt";
 
-    double etaEachStep = (etaStop - etaStart) / etaStep;
     double lambdaEachStep = (lambdaStop - lambdaStart) / lambdaStep;
 
     double loseProb = 0.0;
     double lowestLoseProb = 100.0;
-    double keepEta, keepLambda;
+    int keepIter;
+    double keepLambda;
 
     ofstream outFile(outputFileName.c_str());
-    for (eta = etaStart; eta <= etaStop; eta += etaEachStep)
+    for (int iter = 1; iter <= maxIter; iter++)
     {
+        eta = LearningRate(iter, maxIter);
         for (lambda = lambdaStart; lambda <= lambdaStop; lambda += lambdaEachStep)
         {
             loseProb = 0.0;
@@ -82,15 +80,17 @@ int main()
                 loseProb += UpdateRating(matchData.at(i), teamData, eta, lambda);
             }
 
+            FinalizeLoss(loseProb, teamData, lambda);
+
             if (loseProb < lowestLoseProb)
             {
                 lowestLoseProb = loseProb;
-                keepEta = eta;
+                keepIter = iter;
                 keepLambda = lambda;
             }
 
             outFile << fixed << setprecision(7);
-            outFile << eta << " " << lambda << " " << loseProb << endl;
+            outFile << iter << " " << lambda << " " << loseProb << endl;
 
             //Reset Team'stats
             for (int i = 0; i < teamData.size(); i++)
