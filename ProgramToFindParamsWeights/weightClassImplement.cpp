@@ -25,15 +25,15 @@ bool TeamList::Has(Team *tptr)
 		return false;
 	Node *temp = head;
 	// loop through the end or till find tptr
-	while (temp != NULL && temp->team != tptr)
+	while (temp != NULL)
 	{
+		if (temp->team == tptr)
+			return true;
+
 		temp = temp->next;
 	}
 	// can't find tptr
-	if (temp->team == tptr)
-		return true;
-	else 
-		return false;
+	return false;
 }
 
 void TeamList::Insert(Team* tptr)
@@ -42,9 +42,22 @@ void TeamList::Insert(Team* tptr)
 		return;
 	Node *node = new Node;
 	node->team = tptr;
+
 	node->next = head;
 	head = node;
 	size++;
+}
+
+double TeamList::Average() const
+{
+	Node *temp = head;
+	double sumRating = 0.0;
+	while (temp != NULL)
+	{
+		sumRating += temp->team->Rating();
+		temp = temp->next;
+	}
+	return sumRating / size;
 }
 
 /*int TeamList::Delete(Team* tptr)
@@ -95,14 +108,7 @@ TeamWithNeighbor::TeamWithNeighbor(const string& nameInput) : Team(nameInput)
 
 double TeamWithNeighbor::AverageNeighbor() const
 {
-	Node *temp = neighbor.head;
-	double sumRating = 0;
-	while (temp != NULL)
-	{
-		sumRating += temp->team->Rating();
-		temp = temp->next;
-	}
-	return sumRating / numNeighbor;
+	return neighbor.Average();
 }
 
 void TeamWithNeighbor::AddNeighbor(TeamWithNeighbor *teamPtr)

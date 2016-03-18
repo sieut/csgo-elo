@@ -16,7 +16,7 @@ void CreateRosterVector(vector<RosterInfo>& rosterData);
 void CalCulateExpectedScore(const Team& tA, const Team& tB, double& expectedA, double& expectedB);
 double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& teamData, double eta, double lambda);
 double LearningRate(int currentIter, int maxIter);
-void FinalizeLoss(double &loss, vector<TeamWithNeighbor>& teamData, double lambda);
+double NeighborLoss(vector<TeamWithNeighbor>& teamData, double lambda);
 void MatchAddNeighbor (vector<TeamWithNeighbor>& teamData, vector<MatchWithWeight>& matchData);
 //implementation in another file
 
@@ -29,7 +29,7 @@ int main()
     MatchAddNeighbor(teamData, matchData);
     //vector<RosterInfo> rosterData;
     //CreateRosterVector(rosterData);
-
+  
     cout << "Tmax: ";
     cin >> MatchWithWeight::tmax;
 
@@ -57,11 +57,13 @@ int main()
 
 
     double lambdaEachStep = (lambdaStop - lambdaStart) / lambdaStep;
+    if (lambdaStep == 1)
+        lambdaEachStep = 50.0;
 
     double loseProb = 0.0;
-    double lowestLoseProb = 100.0;
-    int keepIter;
-    double keepLambda;
+    double lowestLoseProb = 10000.0;
+    int keepIter = 0;
+    double keepLambda = 0;
 
     for (int iter = 1; iter <= maxIter; iter++)
     {
@@ -75,12 +77,15 @@ int main()
             {
                 /*while (rosterData.at(rosterInfoIdx).Date() == matchData.at(i).Date()) {     // NEW: Adjust teams' numPlay due to roster change
                     teamData.at(rosterData.at(rosterInfoIdx).Index()).AdjustNumPlay();
-                    rosterInfoIdx += 1;
-                }
-                loseProb += UpdateRating(matchData.at(i), teamData, eta, lambda);*/
+                    rosterInfoIdx += 1;            
+                    }*/
+                loseProb += UpdateRating(matchData.at(i), teamData, eta, lambda);
+                //cout << loseProb << endl;
             }
 
-            FinalizeLoss(loseProb, teamData, lambda);
+            //cout << loseProb << endl;
+            loseProb += NeighborLoss(teamData, lambda);
+            //cout << loseProb << endl;
 
             if (loseProb < lowestLoseProb)
             {
@@ -119,11 +124,12 @@ int main()
 //            outFile << teamData.at(matchData.at(i).LoseTeam()) << endl;
 //        }
     }*/
-
+/*
     for (int i = 0; i < teamData.size(); i++)
     {
         outFile << teamData.at(i) << endl;
     }
+    */
 
 	return 0;
 }
@@ -159,8 +165,8 @@ double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& team
     CalCulateExpectedScore(*tA, *tB, expectedA, expectedB);
 /*    cout << "expectedA: " << expectedA << endl;
     cout << "expectedB: " << expectedB << endl;*/
-    tA->AddNeighbor(tB);
-    tB->AddNeighbor(tA);
+    //tA->AddNeighbor(tB);
+    //tB->AddNeighbor(tA);
 
     if (match.isTie())
     {
@@ -185,11 +191,22 @@ double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& team
     }
 }
 
-void FinalizeLoss(double &loss, vector<TeamWithNeighbor>& teamData, double lambda) {
+double NeighborLoss(vector<TeamWithNeighbor>& teamData, double lambda) {
+    double result = 0.0;
     for (unsigned int i = 0; i < teamData.size(); i++) {
-        loss += lambda * 
-            pow((teamData.at(i).Rating() - teamData.at(i).AverageNeighbor()), 2);
+        cout << teamData.at(i).Rating() << " " << teamData.at(i).AverageNeighbor() << endl;
+
+        if (isnan(teamData.at(i).AverageNeighbor()))
+        {
+            cout << "Rating: " << i << endl;
+            return .0;
+        }
+
+        result += pow((teamData.at(i).Rating() - teamData.at(i).AverageNeighbor()), 2);
     }
+    cout << result << endl;
+    result *= lambda;
+    return result;
 }
 
 void CreateTeamVector(vector<TeamWithNeighbor>& teamData)

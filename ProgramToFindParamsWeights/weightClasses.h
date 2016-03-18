@@ -6,18 +6,20 @@
 #include <string>
 using namespace std;
 
-struct Node { Team* team; Node* next; };
+
 
 class TeamList
 {
 public:
-	
+	struct Node { Team* team; Node* next; };
 	Node *head;
 	int size;
+public:
 	TeamList() { head = NULL; size = 0; }
 	~TeamList();
 	bool Has(Team *tptr);
     void Insert(Team *tptr);
+    double Average() const;
     //int Delete(Team *tptr);
 };
 
