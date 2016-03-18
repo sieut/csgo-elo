@@ -108,6 +108,8 @@ TeamWithNeighbor::TeamWithNeighbor(const string& nameInput) : Team(nameInput)
 
 double TeamWithNeighbor::AverageNeighbor() const
 {
+	if (NumNeighbor() == 0)
+		return 1200.0;
 	return neighbor.Average();
 }
 
