@@ -42,12 +42,18 @@ int main()
 
     double eta, lambda; 
     int maxIter;
+    double etaStart, etaStop;
     double lambdaStart, lambdaStop;
     int etaStep, lambdaStep;
 
 
-    cout << "maxIter-" << endl;
-    cin >> maxIter;
+    cout << "eta-" << endl;
+    cout << "start: ";
+    cin >> etaStart;
+    cout << "stop: ";
+    cin >> etaStop;
+    cout << "step: ";
+    cin >> etaStep;
     cout << "lambda-" << endl;
     cout << "start: ";
     cin >> lambdaStart;
@@ -61,6 +67,9 @@ int main()
     double rmse;
     double keepFinalEta, keepFinalLambda;
 
+    double etaEachStep = (etaStop - etaStart) / etaStep;
+    if (etaStep == 1)
+        etaEachStep = 50.0;
 
     double lambdaEachStep = (lambdaStop - lambdaStart) / lambdaStep;
     if (lambdaStep == 1)
@@ -69,6 +78,7 @@ int main()
     double loseProb = 0.0;
     double lowestLoseProb = 100000.0;
     int keepIter = 0;
+    double keepEta = 0;
     double keepLambda = 0;
     double bestEta = 0.0;
     double loseProbEta = 10000.0;
@@ -77,11 +87,11 @@ int main()
     {
         loseProbEta = 100000.0;
         bestEta = 0.0;
-        for (int iter = 1; iter <= maxIter; iter++)
+        for (eta = etaStart; eta <= etaStop; eta += etaEachStep)
         {
             loseProb = 0.0;
             //int rosterInfoIdx = 0;      // NEW: Index over roster changes vector
-            eta = LearningRate(iter, maxIter);
+            //eta = LearningRate(iter, maxIter);
 
             for (int i = 0; i < 8000; i++)
             {
@@ -100,7 +110,7 @@ int main()
             if (loseProb < lowestLoseProb)
             {
                 lowestLoseProb = loseProb;
-                keepIter = iter;
+                keepEta = eta;
                 keepLambda = lambda;
             }
 
@@ -121,11 +131,12 @@ int main()
         }
 
         outFile << lambda << " " << bestEta << " " << loseProbEta << endl;
+        rmse = 0.0;
         for (int i = 8000; i < matchData.size(); i++)
         {
-            rmse += UpdateRating(matchData.at(i), teamData, bestEta, lambda);
+            rmse += UpdateRatingRMSE(matchData.at(i), teamData, bestEta, lambda);
         }
-        rmse = sqrt(rmse / teamData.size());
+        rmse = sqrt(rmse / (matchData.size() - 8000));
 
         if (rmse < keepRmse)
         {
@@ -133,6 +144,12 @@ int main()
             keepFinalLambda = lambda;
             keepFinalEta = bestEta;
         }
+
+        //Reset Team'stats
+            for (int i = 0; i < teamData.size(); i++)
+            {
+                teamData.at(i).Reset();
+            }
 
     }
 
