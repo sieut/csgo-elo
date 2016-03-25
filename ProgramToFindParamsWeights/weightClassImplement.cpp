@@ -2,8 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <sstream>
-#include <fstream>
+#include <algorithm>
 using namespace std;
 
 // TeamList
@@ -18,45 +17,78 @@ TeamList::~TeamList()
 	}
 }
 
-bool TeamList::Has(Team *tptr)
+TeamList::Node *TeamList::teamNode(Team *tptr) const
 {
 	if (!head)
-		return false;
+		return NULL;
 	Node *temp = head;
 	// loop through the end or till find tptr
 	while (temp != NULL)
 	{
 		if (temp->team == tptr)
-			return true;
+			return temp;
 
 		temp = temp->next;
 	}
 	// can't find tptr
-	return false;
+	return NULL;
 }
 
 void TeamList::Insert(Team* tptr)
 {
-	if (Has(tptr))
-		return;
-	Node *node = new Node;
-	node->team = tptr;
+	Node* teamN = teamNode(tptr);
+	if (teamN)
+	{
+		(teamN->numMatch)++;
+	}
+	else
+	{
+		Node *node = new Node;
+		node->team = tptr;
+		node->numMatch = 1;
 
-	node->next = head;
-	head = node;
-	size++;
+		node->next = head;
+		head = node;
+		size++;
+	}
 }
 
 double TeamList::Average() const
 {
+	vector<int> numMatchData;
+	// loop through
 	Node *temp = head;
-	double sumRating = 0.0;
 	while (temp != NULL)
-	{
-		sumRating += temp->team->Rating();
+	{	
+		numMatchData.push_back(temp->numMatch);
 		temp = temp->next;
 	}
-	return sumRating / size;
+
+	sort(numMatchData.begin(), numMatchData.end());
+
+	//int Q1value = numMatchData.at(static_cast<int>((numMatchData.size() + 1)/4.0));
+	int Q2value = numMatchData.at(static_cast<int>((numMatchData.size() + 1)/2.0));
+	//int Q3value = numMatchData.at(static_cast<int>(3.0 * (numMatchData.size() + 1)/4.0));
+	//cout << "Q1: " << Q1value << endl;
+	//cout << "Q2: " << Q2value << endl;
+	//cout << "Q3: " << Q3value << endl;
+	int tempNumMatch;
+	double sumRating = 0.0;
+	temp = head;
+	int countSize = 0;
+	while (temp != NULL)
+	{
+		tempNumMatch = temp->numMatch;
+		//cout << temp->team->Name() << " " << tempNumMatch << endl;
+		if (tempNumMatch > Q2value)
+		{
+			//cout << "yes" << endl;
+			sumRating += temp->team->Rating();
+			countSize++;
+		}
+		temp = temp->next;
+	}
+	return sumRating / countSize;
 }
 
 /*int TeamList::Delete(Team* tptr)
@@ -115,7 +147,7 @@ double TeamWithNeighbor::AverageNeighbor() const
 void TeamWithNeighbor::AddNeighbor(TeamWithNeighbor *teamPtr)
 {
 	neighbor.Insert(teamPtr);
-	numNeighbor = neighbor.size;
+	numNeighbor = neighbor.Size();
 }
 
 ostream& operator<<(ostream& os, const TeamWithNeighbor& t)
