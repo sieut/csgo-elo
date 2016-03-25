@@ -229,14 +229,9 @@ double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& team
     TeamWithNeighbor *tA = &teamData.at(match.WinTeam());
     TeamWithNeighbor *tB = &teamData.at(match.LoseTeam());
     CalCulateExpectedScore(*tA, *tB, expectedA, expectedB);
-/*    cout << "expectedA: " << expectedA << endl;
-    cout << "expectedB: " << expectedB << endl;*/
-    //tA->AddNeighbor(tB);
-    //tB->AddNeighbor(tA);
 
     if (match.isTie())
     {
-        //k1 weight is built in AddRating
         tA->AddRating(-eta * (match.Weight() * (expectedA - 0.5) * expectedA * (1 - expectedA) 
                 + (lambda / tA->NumNeighbor()) * 
                 (tA->Rating() - tA->AverageNeighbor())));
@@ -266,14 +261,9 @@ double UpdateRatingRMSE(const MatchWithWeight& match, vector<TeamWithNeighbor>& 
     TeamWithNeighbor *tA = &teamData.at(match.WinTeam());
     TeamWithNeighbor *tB = &teamData.at(match.LoseTeam());
     CalCulateExpectedScore(*tA, *tB, expectedA, expectedB);
-/*    cout << "expectedA: " << expectedA << endl;
-    cout << "expectedB: " << expectedB << endl;*/
-    //tA->AddNeighbor(tB);
-    //tB->AddNeighbor(tA);
 
     if (match.isTie())
     {
-        //k1 weight is built in AddRating
         tA->AddRating(-eta * (match.Weight() * (expectedA - 0.5) * expectedA * (1 - expectedA) 
                 + (lambda / tA->NumNeighbor()) * 
                 (tA->Rating() - tA->AverageNeighbor())));
