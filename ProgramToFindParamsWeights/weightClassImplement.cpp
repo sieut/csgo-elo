@@ -7,6 +7,7 @@ using namespace std;
 
 void constructHeap(int *array, int size);
 void maxHeapify(int *array, int pos);
+int extractMax(int *array, int& size);
 void swap(int *array, int p1, int p2);
 int Parent(int pos);
 int Left(int pos);
@@ -179,38 +180,4 @@ double MatchWithWeight::Weight() const
 {
 	double weight = (static_cast<double>(1 + Week() - tmin)/(1 + tmax - tmin));
 	return weight * weight;
-}
-
-void constructHeap(int *array, int size) {
-	for (int i = 0; i < size/2 + 1; i++) {
-		maxHeapify(array, size, i);
-	}
-}
-
-void maxHeapify(int *array, int size, int pos) {
-	if (Left(pos) < size && array[pos] < array[Left(pos)]) {
-		swap(array, pos, Left(pos));
-		maxHeapify(array, size, Left(pos));
-	} else if (Right(pos) < size && array[pos] < array[Right(pos)]) {
-		swap(array, pos, Right(pos));
-		maxHeapify(array, size, Right(pos));
-	}
-}
-
-int Parent(int pos) {
-	return pos/2;
-}
-
-int Right(int pos) {
-	return pos*2 + 1;
-}
-
-int Left(int pos) {
-	return pos*2;
-}
-
-void swap(int *array, int p1, int p2) {
-	int dummy = array[p1];
-	array[p1] = array[p2];
-	array[p2] = dummy;
 }
