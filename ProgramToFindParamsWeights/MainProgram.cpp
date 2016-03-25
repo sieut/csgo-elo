@@ -21,8 +21,26 @@ double NeighborLoss(vector<TeamWithNeighbor>& teamData, double lambda);
 void MatchAddNeighbor (vector<TeamWithNeighbor>& teamData, vector<MatchWithWeight>& matchData);
 //implementation in another file
 
+vector<double> scoreFrequency(15);
+
 int main()
 {
+    scoreFrequency[0] = 0.6;
+    scoreFrequency[1] = 2;
+    scoreFrequency[2] = 3.3;
+    scoreFrequency[3] = 4.4;
+    scoreFrequency[4] = 4.8;
+    scoreFrequency[5] = 6;
+    scoreFrequency[6] = 6.6;
+    scoreFrequency[7] = 6.7;
+    scoreFrequency[8] = 7.8;
+    scoreFrequency[9] = 7.6;
+    scoreFrequency[10] = 8.2;
+    scoreFrequency[11] = 8.1;
+    scoreFrequency[12] = 8.2;
+    scoreFrequency[13] = 8.1;
+    scoreFrequency[14] = 9.1;
+
 	vector<TeamWithNeighbor> teamData;
 	CreateTeamVector(teamData);
 	vector<MatchWithWeight> matchData;
@@ -229,10 +247,12 @@ double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& team
     }
     else
     {
-        tA->AddRating(-eta * (match.Weight() * (expectedA - 1) * expectedA * (1 - expectedA) 
+        double scoreWeight = 1 - pow((1 + scoreFrequency[16 - match.LoseScore()] - scoreFrequency[0])/
+            (1 + scoreFrequency[14] - scoreFrequency[0]), 2.0);
+        tA->AddRating(-eta * scoreWeight * (match.Weight() * (expectedA - 1) * expectedA * (1 - expectedA) 
                 + (lambda / tA->NumNeighbor()) * 
                 (tA->Rating() - tA->AverageNeighbor())));
-        tB->AddRating(-eta * (match.Weight() * (expectedB - 0) * expectedB * (1 - expectedB) 
+        tB->AddRating(-eta * scoreWeight * (match.Weight() * (expectedB - 0) * expectedB * (1 - expectedB) 
                 + (lambda / tB->NumNeighbor()) * 
                 (tB->Rating() - tB->AverageNeighbor())));
         return match.Weight() * pow((expectedA - 1.0), 2);
@@ -264,10 +284,12 @@ double UpdateRatingRMSE(const MatchWithWeight& match, vector<TeamWithNeighbor>& 
     }
     else
     {
-        tA->AddRating(-eta * (match.Weight() * (expectedA - 1) * expectedA * (1 - expectedA) 
+        double scoreWeight = 1 - pow((1 + scoreFrequency[16 - match.LoseScore()] - scoreFrequency[0])/
+            (1 + scoreFrequency[14] - scoreFrequency[0]), 2.0);
+        tA->AddRating(-eta * scoreWeight * (match.Weight() * (expectedA - 1) * expectedA * (1 - expectedA) 
                 + (lambda / tA->NumNeighbor()) * 
                 (tA->Rating() - tA->AverageNeighbor())));
-        tB->AddRating(-eta * (match.Weight() * (expectedB - 0) * expectedB * (1 - expectedB) 
+        tB->AddRating(-eta * scoreWeight * (match.Weight() * (expectedB - 0) * expectedB * (1 - expectedB) 
                 + (lambda / tB->NumNeighbor()) * 
                 (tB->Rating() - tB->AverageNeighbor())));
         return pow((expectedA - 1.0), 2);

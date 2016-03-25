@@ -88,6 +88,9 @@ Match::Match(const string& input)
 	inSS >> loseIndex;
 	inSS >> winActualScore;
 	inSS >> week;
+
+	if (winActualScore = 0.5) loseScore = 15;
+	else loseScore = (16 - 16*winActualScore) / winActualScore;
 }
 
 ostream& operator<<(ostream& os, const Match& m)

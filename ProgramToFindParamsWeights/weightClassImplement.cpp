@@ -1,4 +1,3 @@
-
 #include "weightClasses.h"
 #include <iostream>
 #include <string>

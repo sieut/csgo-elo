@@ -32,6 +32,7 @@ private:
 	int winIndex;
 	int loseIndex;
 	double winActualScore;		//exclude k2 part
+	int loseScore;
 	int week;
 public:
 	Match();
@@ -40,6 +41,7 @@ public:
 	int WinTeam() const { return winIndex; }
 	int LoseTeam() const { return loseIndex; }
 	double WinScore() const { return winActualScore; }
+	int LoseScore() const { return loseScore; }
 	bool isTie() const { return tie; }
 	int Week() const { return week; }
 	friend ostream& operator<<(ostream& os, const Match& m);
