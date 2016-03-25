@@ -14,6 +14,7 @@ private:
 public:
 	Team();
 	Team(const string& nameInput);
+	virtual ~Team() {}
 	const string& Name() const { return name; }
 	double Rating() const { return rating; }
 	double K1weight() const;
@@ -37,6 +38,7 @@ public:
 	Match();
 	Match(bool md, int winidx, int loseidx, double winActSc, int wk);
 	Match(const string& input);
+	virtual ~Match() {}
 	int WinTeam() const { return winIndex; }
 	int LoseTeam() const { return loseIndex; }
 	double WinScore() const { return winActualScore; }

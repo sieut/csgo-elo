@@ -4,22 +4,33 @@
 #include "basicClasses.h"
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
 
 
 class TeamList
 {
-public:
-	struct Node { Team* team; Node* next; };
+private:
+	//typedef struct node Node;
+	struct Node { Team* team; int numMatch; Node* next; };
 	Node *head;
 	int size;
 public:
 	TeamList() { head = NULL; size = 0; }
 	~TeamList();
-	bool Has(Team *tptr);
+
+	// find team, return Node of the team or NULL if not found
+	Node* teamNode(Team *tptr) const;
+
+	// insert the team / plus the numMatch if already have
     void Insert(Team *tptr);
+    
+    // care only Q1 - max (min - Q1 deleted)
     double Average() const;
+
+    int Size() const { return size; }
+
     //int Delete(Team *tptr);
 };
 
