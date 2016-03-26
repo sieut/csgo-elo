@@ -10,6 +10,7 @@
 #include <iomanip>
 using namespace std;
 
+void CreateScoreVector(vector<double>& scoreFrequency);
 void CreateTeamVector(vector<TeamWithNeighbor>& teamData);
 void CreateMatchVector(vector<MatchWithWeight>& matchData);
 void CreateRosterVector(vector<RosterInfo>& rosterData);
@@ -21,26 +22,11 @@ double NeighborLoss(vector<TeamWithNeighbor>& teamData, double lambda);
 void MatchAddNeighbor (vector<TeamWithNeighbor>& teamData, vector<MatchWithWeight>& matchData);
 //implementation in another file
 
-vector<double> scoreFrequency(15);
+vector<double> scoreFrequency;
 
 int main()
 {
-    scoreFrequency[0] = 0.6;
-    scoreFrequency[1] = 2;
-    scoreFrequency[2] = 3.3;
-    scoreFrequency[3] = 4.4;
-    scoreFrequency[4] = 4.8;
-    scoreFrequency[5] = 6;
-    scoreFrequency[6] = 6.6;
-    scoreFrequency[7] = 6.7;
-    scoreFrequency[8] = 7.8;
-    scoreFrequency[9] = 7.6;
-    scoreFrequency[10] = 8.2;
-    scoreFrequency[11] = 8.1;
-    scoreFrequency[12] = 8.2;
-    scoreFrequency[13] = 8.1;
-    scoreFrequency[14] = 9.1;
-
+    CreateScoreVector(scoreFrequency);
 	vector<TeamWithNeighbor> teamData;
 	CreateTeamVector(teamData);
 	vector<MatchWithWeight> matchData;
@@ -58,7 +44,7 @@ int main()
     outputFileName += ".txt";
     ofstream outFile(outputFileName.c_str());
 
-    double eta, lambda; 
+    double eta, lambda;
     int maxIter;
     double etaStart, etaStop;
     double lambdaStart, lambdaStop;
@@ -291,6 +277,27 @@ double NeighborLoss(vector<TeamWithNeighbor>& teamData, double lambda) {
     }
     result *= lambda;
     return result;
+}
+
+void CreateScoreVector(vector<double>& scoreFrequency) {
+    string inFileName = "scoreFrequency.txt";
+
+    ifstream infile(inFileName.c_str());
+    if (!infile.is_open()) {
+        cerr << "Cannot open score frequency file." << endl;
+        return;
+    }
+    string line;
+    getline(infile, line);
+    while (infile.good()) {
+        scoreFrequency.push_back(static_cast<double> line);
+        getline(infile, line);
+    }
+
+    if (!infile.eof()) {
+        cerr << "Cannot read til the end (score frequency)." << endl;
+        return;
+    }
 }
 
 void CreateTeamVector(vector<TeamWithNeighbor>& teamData)

@@ -1,9 +1,0 @@
-Match#1
-E-frag.net  inf 1 nan
-volgare  nan 1 inf
-Match#2
-volgare  nan 2 nan
-E-frag.net  nan 2 nan
-Match#3
-E-frag.net  nan 3 nan
-volgare  nan 3 nan
