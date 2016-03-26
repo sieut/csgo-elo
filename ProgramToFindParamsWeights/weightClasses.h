@@ -27,7 +27,9 @@ public:
     void Insert(Team *tptr);
     
     // care only Q1 - max (min - Q1 deleted)
-    double Average() const;
+    double Average(int numPlay) const;
+
+    int TotalMatches() const;
 
     int Size() const { return size; }
 
@@ -38,6 +40,7 @@ class TeamWithNeighbor : public Team
 {
 private:
 	int numNeighbor;
+	int totalMatch;
 	TeamList neighbor;
 public:
 	TeamWithNeighbor();
@@ -45,6 +48,7 @@ public:
 	int NumNeighbor() const { return numNeighbor; }
 	double AverageNeighbor() const;
 	void AddNeighbor(TeamWithNeighbor *teamPtr);
+	void SumUpMatches();
 	friend ostream& operator<<(ostream& os, const TeamWithNeighbor& t);
 };
 

@@ -17,6 +17,7 @@ public:
 	virtual ~Team() {}
 	const string& Name() const { return name; }
 	double Rating() const { return rating; }
+	int NumPlay() const { return numPlay; }
 	double K1weight() const;
 	void AddRating(double added);       //also add numPlay
 	void Reset();

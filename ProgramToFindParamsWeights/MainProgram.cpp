@@ -113,17 +113,10 @@ int main()
 
             for (int i = 0; i < 8000; i++)
             {
-                /*while (rosterData.at(rosterInfoIdx).Date() == matchData.at(i).Date()) {     // NEW: Adjust teams' numPlay due to roster change
-                    teamData.at(rosterData.at(rosterInfoIdx).Index()).AdjustNumPlay();
-                    rosterInfoIdx += 1;            
-                    }*/
                 loseProb += UpdateRating(matchData.at(i), teamData, eta, lambda);
-                //cout << loseProb << endl;
             }
 
-            //cout << loseProb << endl;
             loseProb += NeighborLoss(teamData, lambda);
-            //cout << loseProb << endl;
 
             if (loseProb < lowestLoseProb)
             {
@@ -206,7 +199,9 @@ void MatchAddNeighbor (vector<TeamWithNeighbor>& teamData, vector<MatchWithWeigh
         teamData.at(matchData.at(i).WinTeam()).AddNeighbor(&teamData.at(matchData.at(i).LoseTeam()));
         teamData.at(matchData.at(i).LoseTeam()).AddNeighbor(&teamData.at(matchData.at(i).WinTeam()));
     }
-    
+    for (unsigned int i = 0; i < teamData.size(); i++) {
+        teamData.at(i).SumUpMatches();
+    }
 }
 
 double LearningRate(int currentIter, int maxIter) {

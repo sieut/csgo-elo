@@ -61,77 +61,28 @@ void TeamList::Insert(Team* tptr)
 	}
 }
 
-double TeamList::Average() const
+double TeamList::Average(int numPlay) const
 {
-	vector<int> numMatchData;
-	// loop through
 	Node *temp = head;
-	while (temp != NULL)
-	{	
-		numMatchData.push_back(temp->numMatch);
+	double average = 0.0;
+
+	while (temp != NULL) {
+		average += (temp->team)->Rating() * (static_cast<double>(temp->numMatch) / numPlay);
 		temp = temp->next;
 	}
-
-	sort(numMatchData.begin(), numMatchData.end());
-
-	//int Q1value = numMatchData.at(static_cast<int>((numMatchData.size() + 1)/4.0));
-	int Q2value = numMatchData.at(static_cast<int>((numMatchData.size() + 1)/2.0));
-	//int Q3value = numMatchData.at(static_cast<int>(3.0 * (numMatchData.size() + 1)/4.0));
-	//cout << "Q1: " << Q1value << endl;
-	//cout << "Q2: " << Q2value << endl;
-	//cout << "Q3: " << Q3value << endl;
-	int tempNumMatch;
-	double sumRating = 0.0;
-	temp = head;
-	int countSize = 0;
-	while (temp != NULL)
-	{
-		tempNumMatch = temp->numMatch;
-		//cout << temp->team->Name() << " " << tempNumMatch << endl;
-		if (tempNumMatch > Q2value)
-		{
-			//cout << "yes" << endl;
-			sumRating += temp->team->Rating();
-			countSize++;
-		}
-		temp = temp->next;
-	}
-	return sumRating / countSize;
+	return average;
 }
 
-/*int TeamList::Delete(Team* tptr)
-{
-	// list is empty
-	if (!head)
-		return 0;
-
-	// tptr is at the head
-	if (head->team == tptr)
-	{
-		Node *temp = head;	
-		head = (head)->next;p
-		delete temp;		
-		size--;
-		return 1;
-	}
-
+int TeamList::TotalMatches() const {
 	Node *temp = head;
-	// loop through the end or till find p
-	while (temp->next != NULL && temp->next->team != tptr)
-	{
+	int total = 0;
+	while (temp != NULL) {
+		total += (temp->numMatch);
 		temp = temp->next;
 	}
-	// can't find tptr
-	if (temp->next == NULL)
-		return 0;
 
-	// find tptr
-	Node *temp2 = temp->next; 	
-	temp->next = temp->next->next;	
-	delete temp2
-	size--;				
-	return 1;
-}*/
+	return total;
+}
 
 //TeamWithNeighbor
 
@@ -143,19 +94,24 @@ TeamWithNeighbor::TeamWithNeighbor() : Team()
 TeamWithNeighbor::TeamWithNeighbor(const string& nameInput) : Team(nameInput)
 {
 	numNeighbor = 0;
+	totalMatch = 0;
 }
 
 double TeamWithNeighbor::AverageNeighbor() const
 {
 	if (NumNeighbor() == 0)
 		return 1200.0;
-	return neighbor.Average();
+	return neighbor.Average(totalMatch);
 }
 
 void TeamWithNeighbor::AddNeighbor(TeamWithNeighbor *teamPtr)
 {
 	neighbor.Insert(teamPtr);
 	numNeighbor = neighbor.Size();
+}
+
+void TeamWithNeighbor::SumUpMatches() {
+	totalMatch = neighbor.TotalMatches();
 }
 
 ostream& operator<<(ostream& os, const TeamWithNeighbor& t)
