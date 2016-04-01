@@ -377,4 +377,3 @@ void CreateRosterVector(vector<RosterInfo>& rosterData) {
         return;
     }
 }
-
