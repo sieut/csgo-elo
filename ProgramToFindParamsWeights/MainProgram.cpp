@@ -34,9 +34,9 @@ int main()
     MatchAddNeighbor(teamData, matchData);
     //vector<RosterInfo> rosterData;
     //CreateRosterVector(rosterData);
-  
-    cout << "Tmax: ";
-    cin >> MatchWithWeight::tmax;
+
+    MatchWithWeight::tmin = matchData.at(0).Week();
+    MatchWithWeight::tmax = matchData.at(matchData.size() - 1).Week();
 
     string outputFileName;
     cout << "Name of output file (no .txt): ";
@@ -153,29 +153,6 @@ int main()
     cout << "Lowest RMSE: " << keepRmse << endl;
     cout << "at eta: " << keepFinalEta << " at lambda: " << keepFinalLambda << endl;
 
-
-/*    int dummy;
-
-    for (int i = 0; i < 3; i++)
-    {
-        UpdateRating(matchData.at(i), teamData, 0.735, 0.77);
-        outFile << "Match#" << i + 1 << endl;
-        outFile << teamData.at(matchData.at(i).WinTeam()) << endl;
-        outFile << teamData.at(matchData.at(i).LoseTeam()) << endl;
-//        if (matchData.at(i).LoseTeam() == 3 || matchData.at(i).WinTeam() == 3)
-//        {
-//            outFile << "Match#" << i + 1 << endl;
-//            outFile << teamData.at(matchData.at(i).WinTeam()) << endl;
-//            outFile << teamData.at(matchData.at(i).LoseTeam()) << endl;
-//        }
-    }*/
-/*
-    for (int i = 0; i < teamData.size(); i++)
-    {
-        outFile << teamData.at(i) << endl;
-    }
-    */
-
 	return 0;
 }
 
@@ -287,11 +264,12 @@ void CreateScoreVector(vector<double>& scoreFrequency) {
         cerr << "Cannot open score frequency file." << endl;
         return;
     }
-    string line;
-    getline(infile, line);
+
+    double dummy;
+    infile >> dummy;
     while (infile.good()) {
-        scoreFrequency.push_back(static_cast<double> line);
-        getline(infile, line);
+        scoreFrequency.push_back(dummy);
+        infile >> dummy;
     }
 
     if (!infile.eof()) {
