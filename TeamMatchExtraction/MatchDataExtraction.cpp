@@ -46,10 +46,11 @@ private:
 	int winIndex;
 	int loseIndex;
 	double winActualScore;		//exclude k2 part
+	int day;
 	int week;
 public:
 	Match();
-	Match(bool md, int winidx, int loseidx, double winActSc, int wk);
+	Match(bool md, int winidx, int loseidx, double winActSc, int _day, int wk);
 	bool isTie() const { return tie; }
 	friend ostream& operator<<(ostream& os, const Match& m);
 };
@@ -61,19 +62,20 @@ Match::Match()
 
 }
 
-Match::Match(bool md, int winidx, int loseidx, double winActSc, int wk)
+Match::Match(bool md, int winidx, int loseidx, double winActSc, int _day, int wk)
 {
 	tie = md;
 	winIndex = winidx;
 	loseIndex = loseidx;
 	winActualScore = winActSc;
+	day = _day;
 	week = wk;
 }
 
 ostream& operator<<(ostream& os, const Match& m)
 {
 	os << static_cast<int>(m.tie)  << " " << m.winIndex << " "
-	   << m.loseIndex << " " << m.winActualScore << " " << m.week;
+	   << m.loseIndex << " " << m.winActualScore << " " << m.day << " " << m.week;
     return os;
 }
 
@@ -189,6 +191,7 @@ void ExtractMatchVector(const string& input, vector<Match>& matchData, const vec
 
 	int teamAIndex = FindTeamIndex(teamAName, teamData);
 	int teamBIndex = FindTeamIndex(teamBName, teamData);
+	int numDay = DateToDay(day, month, year);
 	int week = DateToWeek(day, month, year);
 	double winActualScore;
 												// ATTENTION:
@@ -198,15 +201,15 @@ void ExtractMatchVector(const string& input, vector<Match>& matchData, const vec
 		return;
 	}
 	else if (teamAScore > 16 || teamBScore > 16 || teamAScore == teamBScore) {		// In this case, the match went to overtime
-		matchData.push_back(Match(true, teamAIndex, teamBIndex, 0.5, week));
+		matchData.push_back(Match(true, teamAIndex, teamBIndex, 0.5, numDay, week));
 		return;
 	} else if (teamAScore > teamBScore) {
 		winActualScore = static_cast<double>(teamAScore)/(teamAScore + teamBScore);
-		matchData.push_back(Match(false, teamAIndex, teamBIndex, winActualScore, week));
+		matchData.push_back(Match(false, teamAIndex, teamBIndex, winActualScore, numDay, week));
 		return;
 	} else if (teamBScore > teamAScore) {
 		winActualScore = static_cast<double>(teamBScore)/(teamAScore + teamBScore);
-		matchData.push_back(Match(false, teamBIndex, teamAIndex, winActualScore, week));
+		matchData.push_back(Match(false, teamBIndex, teamAIndex, winActualScore, numDay, week));
 		return;
 	}
 }
