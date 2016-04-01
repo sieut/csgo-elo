@@ -17,7 +17,6 @@ void CreateRosterVector(vector<RosterInfo>& rosterData);
 void CalCulateExpectedScore(const Team& tA, const Team& tB, double& expectedA, double& expectedB);
 double UpdateRating(const MatchWithWeight& match, vector<TeamWithNeighbor>& teamData, double eta, double lambda);
 double UpdateRatingRMSE(const MatchWithWeight& match, vector<TeamWithNeighbor>& teamData, double eta, double lambda);
-double LearningRate(int currentIter, int maxIter);
 double NeighborLoss(vector<TeamWithNeighbor>& teamData, double lambda);
 void MatchAddNeighbor (vector<TeamWithNeighbor>& teamData, vector<MatchWithWeight>& matchData);
 //implementation in another file
@@ -95,7 +94,6 @@ int main()
         {
             loseProb = 0.0;
             //int rosterInfoIdx = 0;      // NEW: Index over roster changes vector
-            //eta = LearningRate(iter, maxIter);
 
             for (int i = 0; i < 8000; i++)
             {
@@ -118,7 +116,6 @@ int main()
             }
 
             //outFile << fixed << setprecision(7);
-            //outFile << LearningRate(keepIter, maxIter) << " " << lambda << " " << loseProb << endl;
 
             //Reset Team'stats
             for (int i = 0; i < teamData.size(); i++)
@@ -165,10 +162,6 @@ void MatchAddNeighbor (vector<TeamWithNeighbor>& teamData, vector<MatchWithWeigh
     for (unsigned int i = 0; i < teamData.size(); i++) {
         teamData.at(i).SumUpMatches();
     }
-}
-
-double LearningRate(int currentIter, int maxIter) {
-    return pow((1 + 0.1*maxIter) / (currentIter + 0.1*maxIter), 0.602);
 }
 
 void CalCulateExpectedScore(const TeamWithNeighbor& tA, const TeamWithNeighbor& tB, 
