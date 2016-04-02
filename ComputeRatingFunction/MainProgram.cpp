@@ -57,7 +57,7 @@ void ComputeRating(int startDay, int endDay)
     bestEta = 0.0;
 
     // find startIndex
-    startIndex = 0;
+    int startIndex = 0;
     while (matchData.at(startIndex).Day() < startDay)
         startIndex++;
 
