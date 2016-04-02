@@ -26,7 +26,7 @@ vector<double> scoreFrequency;
 
 const double LAMBDA = 0.27;
 
-int main()
+void ComputeRating(int startDay, int endDay)
 {
     CreateScoreVector(scoreFrequency);
 	vector<TeamWithNeighbor> teamData;
@@ -37,14 +37,8 @@ int main()
     //vector<RosterInfo> rosterData;
     //CreateRosterVector(rosterData);
 
-    MatchWithWeight::tmin = matchData.at(0).Week();
-    MatchWithWeight::tmax = matchData.at(matchData.size() - 1).Week();
-
-    string outputFileName;
-    cout << "Name of output [All teams' Ratings] file (no .txt): ";
-    cin >> outputFileName;
-    outputFileName += ".txt";
-    ofstream outFile(outputFileName.c_str());
+    MatchWithWeight::tmin = startDay;
+    MatchWithWeight::tmax = endDay;
 
     double eta;
     int maxIter;
@@ -61,11 +55,18 @@ int main()
     double loseProbEta = 100000.0;
 
     bestEta = 0.0;
+
+    // find startIndex
+    startIndex = 0;
+    while (matchData.at(startIndex).Day() < startDay)
+        startIndex++;
+
+    // loop
     for (eta = etaStart; eta <= etaStop; eta += etaEachStep)
     {
         loseProb = 0.0;
 
-        for (int i = 0; i < matchData.size(); i++)
+        for (int i = startIndex; i < matchData.size() && matchData.at(i).Day() <= endDay; i++)
         {
             loseProb += UpdateRating(matchData.at(i), teamData, eta, LAMBDA);
         }
@@ -84,23 +85,11 @@ int main()
             teamData.at(i).Reset();
         }
     }
-    cout << bestEta << endl;
-    double rmse = 0.0;
     // Find all teams' ratings with bestEta
-    for (int i = 0; i < matchData.size(); i++)
+    for (int i = startIndex; i < matchData.size() && matchData.at(i).Day() <= endDay; i++)
     {
-        rmse += UpdateRatingRMSE(matchData.at(i), teamData, eta, LAMBDA);
+        UpdateRatingRMSE(matchData.at(i), teamData, eta, LAMBDA);
     }
-    rmse = sqrt(rmse / matchData.size());
-    cout << rmse << endl;
-
-    // Print team's rating
-    for (int i = 0; i < teamData.size(); i++)
-    {
-        outFile << i << " " << teamData.at(i).Rating() << endl;
-    }
-
-	return 0;
 }
 
 void MatchAddNeighbor (vector<TeamWithNeighbor>& teamData, vector<MatchWithWeight>& matchData)
