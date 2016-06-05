@@ -4,29 +4,55 @@ import psycopg2
 import requests
 from bs4 import BeautifulSoup
 
-sys.setrecursionlimit(1500)
+def scrapeurl():
+	# Debug dbInfo
+	dbInfo = "dbname='testdb' user='postgres' host='localhost' password='TnS131997'"
+	# EC2 dbInfo
+	#dbInfo = "dbname='matchdata' user='sieut' host='localhost' password='TnS131997'"
 
-try:
-    conn = psycopg2.connect("dbname='testdb' user='postgres' host='localhost' password='TnS131997'")
-    conn.autocommit = True
-except:
-    sys.exit('Cannot connect to database')
-cur = conn.cursor()
+	try:
+	    conn = psycopg2.connect("dbname='testdb' user='postgres' host='localhost' password='TnS131997'")
+	except:
+	    sys.exit('Cannot connect to database')
+	insertCur = conn.cursor()
+	selectCur = conn.cursor('selectcur')
+	try:
+		selectCur.execute("""select * from url order by id desc limit 100""")
+	except Exception, e:
+		print(str(e))
+		sys.exit()
+	lasthundred = selectCur.fetchall()
+	selectCur.close()
 
-r = requests.get('http://www.hltv.org/matches/archive/')
-soup = BeautifulSoup(r.text, 'html.parser')
+	r = requests.get('http://www.hltv.org/matches/archive/')
+	soup = BeautifulSoup(r.text, 'html.parser')
 
-urlContainer = soup.find_all(class_='hotmatchbox')[2].table
-urls = urlContainer.find_all(href = re.compile('/match/'))
-old_link = ''
-for url in urls:
-	if (url['href'] != old_link):
-		old_link = url['href'].encode('ascii','ignore')
-		try:
-			cur.execute("""insert into url (url) values (%s)""", [old_link])
-			conn.commit()
-		except Exception, e:
-			print(str(e))
+	urlContainer = soup.find_all(class_='hotmatchbox')[2].table
+	urls = urlContainer.find_all(href = re.compile('/match/'))
+	urls = urls[::-1]
+	old_link = ''
+	for url in urls:
+		if (url['href'] != old_link):
+			old_link = url['href'].encode('ascii','ignore')
 
-cur.close()
-conn.close()
+			existed = False
+			for row in lasthundred:
+				if (old_link == row[1]):
+					existed = True
+					break
+			if existed: continue
+
+			try:
+				insertCur.execute("""insert into url (url) values (%s)""", [old_link])
+				conn.commit()
+			except Exception, e:
+				print(str(e))
+
+	insertCur.close()
+	conn.close()
+
+def test():
+	print "Testing"
+
+if __name__ == "__main__":
+	sys.exit("Not for running from terminal")
