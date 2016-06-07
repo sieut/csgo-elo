@@ -8,7 +8,7 @@ def scrapeurl():
 	# Debug dbInfo
 	#dbInfo = "dbname='testdb' user='postgres' host='localhost' password='TnS131997'"
 	# RDS dbInfo
-	dbInfo = "dbname='csgodata' user='ueisiost' host='csgoinstance.cnlaxgorpmfr.us-west-2.rds.amazonaws.com:5432csgoinstance.cnlaxgorpmfr.us-west-2.rds.amazonaws.com' port='5432' password='TnS131997'"
+	dbInfo = "dbname='csgodata' user='ueisiost' host='csgoinstance.cnlaxgorpmfr.us-west-2.rds.amazonaws.com' port='5432' password='TnS131997'"
 
 	try:
 	    conn = psycopg2.connect(dbInfo)
