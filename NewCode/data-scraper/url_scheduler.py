@@ -9,7 +9,7 @@ def main():
 	sys.setrecursionlimit(1500)
 
 	scheduler = BackgroundScheduler()
-	scheduler.add_job(url_scraper.scrapeurl, 'interval', minutes=1)
+	scheduler.add_job(url_scraper.scrapeurl, 'interval', hours=8)
 	scheduler.start()
 	while True:
 		time.sleep(10)
