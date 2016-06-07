@@ -6,12 +6,12 @@ from bs4 import BeautifulSoup
 
 def scrapeurl():
 	# Debug dbInfo
-	dbInfo = "dbname='testdb' user='postgres' host='localhost' password='TnS131997'"
+	#dbInfo = "dbname='testdb' user='postgres' host='localhost' password='TnS131997'"
 	# RDS dbInfo
-	#dbInfo = "dbname='csgodata' user='ueisiost' host='csgoinstance.cnlaxgorpmfr.us-west-2.rds.amazonaws.com:5432csgoinstance.cnlaxgorpmfr.us-west-2.rds.amazonaws.com' port='5432' password='TnS131997'"
+	dbInfo = "dbname='csgodata' user='ueisiost' host='csgoinstance.cnlaxgorpmfr.us-west-2.rds.amazonaws.com:5432csgoinstance.cnlaxgorpmfr.us-west-2.rds.amazonaws.com' port='5432' password='TnS131997'"
 
 	try:
-	    conn = psycopg2.connect("dbname='testdb' user='postgres' host='localhost' password='TnS131997'")
+	    conn = psycopg2.connect(dbInfo)
 	except:
 	    sys.exit('Cannot connect to database')
 	insertCur = conn.cursor()
@@ -45,6 +45,7 @@ def scrapeurl():
 			try:
 				insertCur.execute("""insert into url (url) values (%s)""", [old_link])
 				conn.commit()
+				print(old_link)
 			except Exception, e:
 				print(str(e))
 
